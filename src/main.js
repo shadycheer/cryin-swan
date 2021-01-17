@@ -1,15 +1,10 @@
-/*
- * @author: Shadycheer
- * @Date: 2021-01-16 02:31:06
- * @LastEditTime: 2021-01-16 02:40:22
- * @LastEditor: Shadycheer
- */
-/*
- * @author: Shadycheer
- * @Date: 2021-01-16 02:31:06
- * @LastEditTime: 2021-01-16 02:39:59
- * @LastEditor: Shadycheer
- */
+/**
+ *
+ * @description:
+ *
+ * @author Shadycheer
+ *
+ **/
 import Vue from 'vue'
 import App from './App'
 import router from './router'
