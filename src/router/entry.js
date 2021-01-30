@@ -23,8 +23,7 @@ export default [{
     name: ENTRY_ROUTE_NAME.Home,
     component: ThreeFrame,
     meta: {
-      keepAlive: false,
-      pageSource: 'entry_home_page'
+      keepAlive: false
     }
   }, {
     path: ''
