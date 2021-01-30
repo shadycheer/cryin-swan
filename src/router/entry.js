@@ -7,12 +7,12 @@
  **/
 import { ENTRY_ROUTE_NAME } from '@/router/constant'
 
-const PageContainer = () => import(/* webpackChunkName: "chunk-entry" */'@/views/entry/page-container')
-const ThreeFrame = () => import(/* webpackChunkName: "chunk-entry" */'@/views/entry/three-frame')
+const Entry = () => import(/* webpackChunkName: "chunk-entry" */'@/views/entry/Entry')
+const ThreeFrame = () => import(/* webpackChunkName: "chunk-entry" */'@/views/entry/ThreeFrame')
 
 export default [{
-  path: '/',
-  component: PageContainer,
+  path: '/entry',
+  component: Entry,
   children: [{
     path: '',
     redirect: to => {
@@ -25,7 +25,5 @@ export default [{
     meta: {
       keepAlive: false
     }
-  }, {
-    path: ''
   }]
 }]

@@ -1,9 +1,3 @@
-<!--
- * @author: Shadycheer
- * @Date: 2021-01-16 02:31:06
- * @LastEditTime: 2021-01-17 17:39:09
- * @LastEditor: Shadycheer
--->
 <style scoped lang="less">
 
 </style>
@@ -113,7 +107,6 @@ export default {
     onWindowResize () {
       this.camera.aspect = window.innerWidth / window.innerHeight
       this.camera.updateProjectionMatrix()
-      this.render()
       this.renderer.setSize(window.innerWidth, window.innerHeight)
     }
   },
