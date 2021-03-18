@@ -13,5 +13,4 @@ export class GameController {
     this.jump = jump
     this.dash = dash
   }
-
 }

@@ -5,13 +5,15 @@
  * @author shadycheer
  *
  **/
+
 import axios from 'axios'
+import CONSTANT from '@/api/constant'
+import API_LIST from '@/api/api-list'
 
 export const modelService = {}
-const url = 'http://localhost:8080'
 
 modelService.fetchModelData = () => {
-  return axios.get(url + '/character/list').then(res => res.data)
+  return axios.get(CONSTANT.url + API_LIST.getModelList).then(res => res.data)
 }
 
 export default modelService

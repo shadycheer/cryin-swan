@@ -9,14 +9,15 @@
 <script>
 
 import * as THREE from 'three'
-import { modelOrder, threeInit } from '@/common'
+import modelOrder from '@/common/model-order'
+import threeInit from '@/common/three-init'
 
 export default {
 	name: 'Guide',
 	mixins: [],
 	data () {
 		return {
-			model: new THREE.Object3D(),
+			model: new THREE.Object3D()
 		}
 	},
 	methods: {
@@ -44,7 +45,6 @@ export default {
 				this.model.scale.set(25, 25, 25)
 				this.model.rotateY(180)
 			}).then(() => this.threeManager.add(this.model))
-
 		},
 		initControls () {
 			this.threeManager.controls.autoRotate = false

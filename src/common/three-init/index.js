@@ -15,16 +15,16 @@ export class threeInit {
       antialias: true,
       logarithmicDepthBuffer: true
     })
-    //初始化场景
+    // 初始化场景
     this.scene = new THREE.Scene()
-    //初始化相机
+    // 初始化相机
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    //初始化光源
+    // 初始化光源
     this.ambientLight = new THREE.AmbientLight()
     this.pointLight = new THREE.PointLight()
-    //初始化模型
+    // 初始化模型
     this.model = new THREE.Object3D()
-    //初始化控制器
+    // 初始化控制器
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.initRender(dom)
     this.initParams()

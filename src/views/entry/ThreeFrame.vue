@@ -8,20 +8,23 @@
 
 <script>
 import * as THREE from 'three'
-import { modelOrder, backgroundCreate, threeInit } from '@/common'
+import backgroundCreate from '@/common/background-create'
+import modelOrder from '@/common/model-order'
+import threeInit from '@/common/three-init'
 
+let thM
 export default {
-  name: 'HelloThree',
-  data () {
-    return {
+	name: 'HelloThree',
+	data () {
+		return {
 			model: new THREE.Object3D()
 		}
-  },
-  methods: {
+	},
+	methods: {
 		init () {
 			const container = document.getElementById('container')
-			this.thM = new threeInit(container)
-			this.thM.renderer.setClearColor('#fbc531', 1.0)
+			thM = new threeInit(container)
+			thM.renderer.setClearColor('#fbc531', 1.0)
 			this.initCamera()
 			this.initLight()
 			this.initCubeBackGround()
@@ -31,11 +34,11 @@ export default {
 			this.render()
 		},
 		initCamera () {
-			this.thM.camera.position.set(0, 10, 20)
-			this.thM.camera.lookAt(new THREE.Vector3(0, 0, 0))
+			thM.camera.position.set(0, 10, 20)
+			thM.camera.lookAt(new THREE.Vector3(0, 0, 0))
 		},
 		initLight () {
-			this.thM.pointLight.position.set(0, 100, 300)
+			thM.pointLight.position.set(0, 100, 300)
 		},
 		async initModel () {
 			this.model = await modelOrder.loadModel('/model/person4.fbx')
@@ -43,17 +46,17 @@ export default {
 			this.model.position.set(0, -10, 0)
 			this.model.scale.set(25, 25, 25)
 			this.model.rotateY(180)
-			this.thM.add(this.model)
+			thM.add(this.model)
 		},
 		initCubeBackGround () {
-			this.thM.add(backgroundCreate.Cube(1000))
+			thM.add(backgroundCreate.Cube(1000))
 		},
 		initControls () {
-			this.thM.controls.autoRotate = true
+			thM.controls.autoRotate = true
 		},
 		render () {
-			this.thM.controls.update()
-			this.thM.renderer.render(this.thM.scene, this.thM.camera)
+			thM.controls.update()
+			thM.renderer.render(thM.scene, thM.camera)
 		},
 		update () {
 			const update = () => {

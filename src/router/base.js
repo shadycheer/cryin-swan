@@ -10,7 +10,7 @@ import NotFound from '@/views/base/404'
 export default [
   {
     path: '/',
-    redirect: '/entry'
+    redirect: '/main'
   },
   {
     path: '/*',
