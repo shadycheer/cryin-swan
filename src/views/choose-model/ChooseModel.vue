@@ -1,14 +1,9 @@
 <style scoped lang="less">
 @import (reference) "~@/assets/less/index";
-
 .container {
 	width: 100%;
 	height: 100vh;
 }
-
-.el-drawer {
-}
-
 .drawer {
 	font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC,
 	Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;
@@ -39,7 +34,7 @@
 					<div>{{ '跳跃：' + objectInfo.jump }}</div>
 					<div>{{ '冲刺：' + objectInfo.dash }}</div>
 					<div>{{ objectInfo.description }}</div>
-					<el-button @click.stop="$_openChooseModelMessage(objectInfo.name)">确定</el-button>
+					<el-button @click.stop="$_openChooseModelMessage(objectInfo)">确定</el-button>
 				</div>
 			</el-drawer>
 		</div>
@@ -54,6 +49,8 @@ import { MsgBoxMixin } from '@/mixins'
 import threeInit from '@/common/three-init'
 import modelOrder from '@/common/model-order'
 import { OBJECT_INFO } from '@/config'
+import userInfoUpdate from '@/common/user-info-update'
+import { mapState } from 'vuex'
 
 let thM
 export default {
@@ -62,7 +59,6 @@ export default {
 	data () {
 		return {
 			loading: true,
-			thM: null,
 			mouse: new THREE.Vector2(),
 			rayCaster: null,
 			group: new THREE.Group(),
@@ -74,27 +70,17 @@ export default {
 		}
 	},
 	methods: {
-		open () {
-			this.$alert('这是一段内容', '标题名称', {
-				confirmButtonText: '确定',
-				callback: action => {
-					this.$message({
-						type: 'info',
-						message: `action: ${action}`
-					})
-				}
-			})
-		},
-		init () {
+		async init () {
 			const container = document.getElementById('container')
 			thM = new threeInit(container)
 			thM.renderer.setClearColor('#fbc531', 1.0)
 			this.initCamera()
 			this.initLight()
-			this.initModel()
+			await this.initModel()
 			this.initControls()
 			this.render()
 			this.update()
+			window.addEventListener('click', this.onMouseClick)
 		},
 		initCamera () {
 			thM.camera.position.set(0, 0, 200)
@@ -103,8 +89,8 @@ export default {
 		initLight () {
 			thM.pointLight.position.set(0, 100, 0)
 		},
-		async initModel () {
-			await modelService.fetchModelData().then((res) => {
+		initModel () {
+			modelService.fetchModelData().then((res) => {
 				res.data.forEach((item, index) => {
 					modelOrder.loadModel(item.modelUrl).then(mesh => {
 						mesh.scale.set(8, 8, 8)
@@ -114,14 +100,10 @@ export default {
 						mesh.updateMatrix()
 						mesh.info = item
 						this.map.set(mesh.info.characterId, mesh.rotation.y)
-						console.log(mesh)
 						this.group.add(mesh)
-						console.log(this.group)
 					})
 				})
 				thM.add(this.group)
-			}).then(() => {
-				window.addEventListener('click', this.onMouseClick, false)
 			})
 		},
 		initControls () {
@@ -149,6 +131,7 @@ export default {
 				thM.controls.autoRotate = false
 				thM.camera.position.set(pos.x, pos.y + 10, pos.z)
 			} else {
+				if (!this.model.parent) return
 				this.choose = false
 				this.drawer = false
 				this.model.parent.rotation.y = this.map.get(this.model.parent.info.characterId)
@@ -172,6 +155,15 @@ export default {
 	},
 	mounted () {
 		this.init()
+	},
+	computed: {
+		...mapState('common', ['userInfo', 'token'])
+	},
+	beforeDestroy () {
+		thM.destroyMesh()
+		window.removeEventListener('click', this.onMouseClick)
+		this.model = null
+		this.group = null
 	}
 }
 </script>

@@ -6,9 +6,9 @@
  *
  **/
 
-const debounce = function (delay) {
+const debounce = delay => {
   let timeout = null
-  return function (action, ...args) {
+  return (action, ...args) => {
     let runCallback = function () {
       timeout = null
       action.apply(window, args)
@@ -19,5 +19,5 @@ const debounce = function (delay) {
 }
 
 export default {
-  debounce
+  debounce,
 }

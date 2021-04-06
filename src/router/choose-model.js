@@ -13,7 +13,6 @@ const ChooseModel = () => import(/* webpackChunkName: "chunk-entry" */ '@/views/
 export default [{
   path: '/chooseModel',
   component: PageContainer,
-  name: CHOOSE_MODEL_ROUTE_NAME.PageContainer,
   children: [{
     path: '',
     redirect: to => 'home'

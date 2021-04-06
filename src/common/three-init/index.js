@@ -7,6 +7,7 @@
  **/
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import ca from 'element-ui/src/locale/lang/ca'
 
 export class threeInit {
   constructor (dom) {
@@ -66,6 +67,41 @@ export class threeInit {
 
   add (mesh) {
     this.scene.add(mesh)
+  }
+
+  dispose (parent, child) {
+    if (child.children.length) {
+      let arr = child.children.filter(x => x)
+      arr.forEach(a => this.dispose(child, a))
+    }
+    if (child instanceof THREE.Mesh || child instanceof THREE.Line) {
+      try {
+        child.material.dispose()
+        child.geometry.dispose()
+        child.renderTarget.dispose()
+      } catch (e) {
+        child = null
+      }
+    } else if (child.material) {
+      child.material.dispose()
+    } else {
+      return
+    }
+    parent.remove(child)
+  }
+
+  destroyMesh () {
+    let arr = this.scene.children.filter(item => item)
+    arr.forEach(item => this.dispose(this.scene, item))
+    this.model = null
+    this.scene.remove()
+    this.renderer.forceContextLoss()
+    this.renderer.renderLists.dispose()
+    try {
+      this.renderer = null
+    } catch (e) {
+      this.renderer = null
+    }
   }
 }
 

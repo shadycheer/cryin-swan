@@ -11,11 +11,9 @@
 		color: white;
 	}
 }
-
 .login-form {
 	z-index: 1;
 }
-
 .change {
 	position: absolute;
 	font-size: 24px;
@@ -28,7 +26,6 @@
 		color: white;
 	}
 }
-
 .login-form, .register-form {
 	position: absolute;
 	width: 400px;
@@ -41,9 +38,7 @@
 	box-shadow: 1px 5px 20px 1px #718093;
 	border-radius: 6px;
 	transition: 1s cubic-bezier(0.81, -0.4, 0.02, 1.33);
-
 }
-
 .txt-block {
 	width: 240px;
 	height: 50px;
@@ -57,7 +52,6 @@
 	border-radius: 6px;
 	text-align: center;
 }
-
 .txt-border-useful {
 	width: 240px;
 	height: 50px;
@@ -71,7 +65,6 @@
 	border-radius: 6px;
 	text-align: center;
 }
-
 .txt-border-wrong {
 	width: 240px;
 	height: 50px;
@@ -85,7 +78,6 @@
 	text-align: center;
 	border: 1px solid #ff6b6b;
 }
-
 .login-btn {
 	margin-top: 100px;
 	width: 140px;
@@ -97,7 +89,6 @@
 	color: #bdc3c7;
 	cursor: not-allowed;
 }
-
 .login-btn-full {
 	margin-top: 100px;
 	width: 140px;
@@ -109,7 +100,6 @@
 	background: #2ecc71;
 	cursor: pointer;
 }
-
 .hide-login-btn, .hide-us-btn {
 	position: absolute;
 	right: 20px;
@@ -119,15 +109,12 @@
 	font-size: 30px;
 	cursor: pointer;
 }
-
 .register-form {
 	transform: rotateY(180deg);
 }
-
 .re-turn {
 	transform: rotateY(0deg);
 }
-
 .lo-turn {
 	z-index: 0;
 	transform: rotateY(-180deg);
@@ -300,7 +287,7 @@ export default {
 		},
 		async loginBtnClick () {
 			const res = await loginService.userLogin(this.loginUser, this.loginPwd)
-			this.$_openLoginMessage(res.status)
+			this.$_openLoginMessage(res)
 		},
 		async registerBtnClick () {
 			const res = await loginService.userRegister(this.registerUser, this.registerPwd)

@@ -11,7 +11,7 @@ export const backgroundCreate = {}
 
 backgroundCreate.Cube = (count) => {
   const cube = new THREE.CubeGeometry(25, 25, 25)
-  const cubeArray = new THREE.Object3D()
+  const cubeArray = new THREE.Group()
   for (let i = 0; i < count; i++) {
     const material = new THREE.MeshBasicMaterial({ color: backgroundCreate.randomColor() })
     const mesh = new THREE.Mesh(cube, material)

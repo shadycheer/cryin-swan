@@ -14,8 +14,11 @@ export const API_LIST = Object.freeze({
   // 用户登录
   userLogin: '/user/login',
   // 获取模型列表
-  getModelList: '/character/list'
-
+  getModelList: '/character/list',
+  // 获取用户信息
+  getUserInfo: '/user/info',
+  // 更新用户所选角色
+  updateUserCharacter: '/user/character/'
 })
 
 export default API_LIST

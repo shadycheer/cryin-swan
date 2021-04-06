@@ -21,9 +21,6 @@ export default [{
   }, {
     path: 'home',
     name: ENTRY_ROUTE_NAME.ThreeFrame,
-    component: ThreeFrame,
-    meta: {
-      keepAlive: false
-    }
+    component: ThreeFrame
   }]
 }]

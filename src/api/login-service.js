@@ -10,8 +10,9 @@ import CONSTANT from '@/api/constant'
 import API_LIST from '@/api/api-list'
 import qs from 'qs'
 
+const url = CONSTANT.url
+
 export const loginService = {}
-let url = CONSTANT.url
 
 loginService.checkUsernameIsAvailable = (username) => {
   return axios.post(
