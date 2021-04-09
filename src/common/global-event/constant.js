@@ -7,5 +7,6 @@
  **/
 
 export const EVENT_NAME = Object.freeze({
-  setThreeFrameResize: 'setThreeFrameResize'
+  setThreeFrameResize: 'setThreeFrameResize',
+  transferCharacterData: 'transferCharacterData'
 })

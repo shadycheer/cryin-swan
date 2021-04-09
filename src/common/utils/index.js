@@ -18,6 +18,17 @@ const debounce = delay => {
   }
 }
 
+const isNullObject = (obj = {}) => {
+  let isNull = false
+  Object.keys(obj).forEach(item => {
+    if (obj[item] === null || obj[item] === '' || obj[item] === 0) {
+      isNull = true
+    }
+  })
+  return isNull
+}
+
 export default {
   debounce,
+  isNullObject
 }

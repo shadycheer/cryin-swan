@@ -24,6 +24,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
+          await userInfoUpdate.characterStatusSetter(this.objectInfo)
           let res = await userService.updateModel(object.characterId)
           if (res) await userInfoUpdate.updateUserCharacter(object.characterId)
           this.$router.push({ name: ENTRY_ROUTE_NAME.ThreeFrame })

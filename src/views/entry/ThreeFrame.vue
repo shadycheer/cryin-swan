@@ -87,8 +87,9 @@ export default {
 			thM.pointLight.position.set(0, 100, 300)
 		},
 		async initModel () {
-			const characterId = await userInfoUpdate.userCharacterGetter()
-			this.model = await modelOrder.loadModel(`/model/person${characterId}.fbx`)
+			const info = await userInfoUpdate.characterStatusGetter()
+			console.log(info)
+			this.model = await modelOrder.loadModel(info.modelUrl)
 			this.model = modelOrder.setShadow(this.model, true)
 			this.model.position.set(0, -10, 0)
 			this.model.scale.set(25, 25, 25)

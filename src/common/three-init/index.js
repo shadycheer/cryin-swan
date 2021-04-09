@@ -8,6 +8,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import ca from 'element-ui/src/locale/lang/ca'
+import { PerspectiveCamera } from 'three'
 
 export class threeInit {
   constructor (dom) {
@@ -35,6 +36,12 @@ export class threeInit {
     this.initLight()
     this.initControls()
     window.onresize = () => this.onWindowResize()
+  }
+
+  changeCamera (fov, aspect, near, far, types = 'PerspectiveCamera') {
+    this.camera = new THREE[types](fov, aspect, near, far)
+    // 更改之后需要重新初始化controls
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
   }
 
   initRender (dom, color = '#fff') {

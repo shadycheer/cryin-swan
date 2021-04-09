@@ -17,6 +17,14 @@ const moduleState = {
     userId: 0,
     status: '',
     characterId: 0,
+  },
+  characterInfo: {
+    characterId: 0,
+    health: 0,
+    dash: 0,
+    jump: 0,
+    speed: 0,
+    modelUrl: ''
   }
 }
 
@@ -32,6 +40,9 @@ const mutations = {
   },
   [TYPES.USER_STATUS] (state, value) {
     state['common/userInfo'].status = value
+  },
+  [TYPES.CHARACTER_INFO] (state, value) {
+    state.characterInfo = value
   }
 }
 

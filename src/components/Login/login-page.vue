@@ -287,7 +287,7 @@ export default {
 		},
 		async loginBtnClick () {
 			const res = await loginService.userLogin(this.loginUser, this.loginPwd)
-			this.$_openLoginMessage(res)
+			await this.$_openLoginMessage(res)
 		},
 		async registerBtnClick () {
 			const res = await loginService.userRegister(this.registerUser, this.registerPwd)

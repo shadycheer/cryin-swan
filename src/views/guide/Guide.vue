@@ -11,47 +11,123 @@
 import * as THREE from 'three'
 import modelOrder from '@/common/model-order'
 import threeInit from '@/common/three-init'
+import userInfoUpdate from '@/common/user-info-update'
+import Observe from '@/common/global-event/observe'
+import { GameControlMixin } from '@/mixins'
+import { EVENT_NAME } from '@/common/global-event/constant'
 
+let thM
 export default {
 	name: 'Guide',
-	mixins: [],
+	mixins: [GameControlMixin],
 	data () {
 		return {
-			model: new THREE.Object3D()
+			model: new THREE.Object3D(),
 		}
 	},
 	methods: {
-		init () {
+		async fetchCharacterInfo () {
+			let info = await userInfoUpdate.characterStatusGetter()
+			this.speed = info.speed
+			this.dash = info.dash
+			this.health = info.health
+			this.jump = info.jump
+			Observe.$emit(EVENT_NAME.transferCharacterData, info)
+		},
+		async init () {
 			const container = document.getElementById('container')
-			this.threeManager = new threeInit(container)
-			this.threeManager.renderer.setClearColor('#fbc531', 1.0)
+			thM = new threeInit(container)
+			await this.fetchCharacterInfo()
+			this.$_propertySetter()
+			this.initRender()
 			this.initCamera()
 			this.initLight()
-			this.initModel()
+			this.initPlane()
+			await this.initModel()
 			this.initControls()
+			this.$_gameOrbitControls(thM.controls)
+			this.$_gameControlKeyBoard(thM.camera)
+			this.update()
+			this.render()
+		},
+		initRender () {
+			thM.renderer.setPixelRatio(window.devicePixelRatio)
+			thM.renderer.setSize(window.innerWidth, window.innerHeight)
+			thM.renderer.setClearColor('#ffffff', 1.0)
+			thM.renderer.shadowMap.enabled = true
+			thM.renderer.shadowMap.type = THREE.PCFSoftShadowMap
 		},
 		initCamera () {
-			this.threeManager.camera.position.set(0, 10, 20)
-			this.threeManager.camera.lookAt(new THREE.Vector3(0, 0, 0))
+			thM.changeCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000)
+			thM.camera.position.set(0, 300, 300)
 		},
 		initLight () {
-			this.threeManager.pointLight.position.set(0, 100, 300)
+			thM.pointLight.position.set(0, 300, 300)
 		},
-		initModel () {
-			modelOrder.loadModel('/model/person4.fbx').then((res) => {
-				this.model = res
-				this.model = modelOrder.setShadow(this.model, true)
-				this.model.position.set(0, -10, 0)
-				this.model.scale.set(25, 25, 25)
-				this.model.rotateY(180)
-			}).then(() => this.threeManager.add(this.model))
+		async initModel () {
+			const characterId = await userInfoUpdate.userCharacterGetter()
+			this.model = await modelOrder.loadModel(`/model/person${characterId}.fbx`)
+			this.model = modelOrder.setShadow(this.model, true)
+			this.model.position.set(0, 0, 0)
+			this.objMixer = new THREE.AnimationMixer(this.model)
+			this.objAction = this.objMixer.clipAction(this.model.animations[0])
+			thM.add(this.model)
 		},
 		initControls () {
-			this.threeManager.controls.autoRotate = false
+			thM.controls.autoRotate = false
+			thM.controls.minDistance = 50
+			thM.controls.maxDistance = 500
+		},
+		initPlane () {
+			// 地板
+			let plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(200, 200),
+					new THREE.MeshPhongMaterial({
+						color: 0xffffff,
+						depthWrite: false
+					}))
+			plane.rotation.x = -Math.PI / 2
+			modelOrder.setShadow(plane, true)
+			thM.add(plane)
+			//添加地板割线
+			let grid = new THREE.GridHelper(200, 20, 0x000000, 0x000000)
+			grid.material.opacity = 0.2//地板割线透明度
+			grid.material.transparent = true//地板材质透明
+			thM.add(grid)
+		},
+		render () {
+			let time = this.clock.getDelta()
+			if (this.objMixer) {
+				this.objMixer.update(time)
+			}
+			thM.renderer.render(thM.scene, thM.camera)
+			thM.controls.update()
+			const phi = thM.controls.getPolarAngle() //获取当前用弧度表示的垂直旋转角度
+			const theta = thM.controls.getAzimuthalAngle() //获取当前用弧度表示的水平旋转角度
+			const distance = thM.controls.object.position.distanceTo(thM.controls.target) //获取两点之间的距离
+			this.model.position.x += this.move.x
+			this.model.position.z += this.move.z
+			this.model.rotation.y = theta
+
+			if (this.model) {
+				thM.controls.target.copy(this.model.position)
+				thM.controls.setAngle(phi, theta, distance)
+			}
+		},
+		update () {
+			const update = () => {
+				this.render()
+				requestAnimationFrame(update)
+			}
+			update()
 		}
 	},
 	mounted () {
 		this.init()
+	},
+	beforeDestroy () {
+		cancelAnimationFrame(this.update)
+		this.model = null
+		thM.destroyMesh()
 	}
 }
 </script>

@@ -27,7 +27,7 @@
 					:visible.sync="drawer"
 					:with-header="true"
 			>
-				<img src="public/img/picLogo/bine.png"/>
+				<img :src="'/../../../img/picLogo/' + objectInfo.characterId + '.png'" width="50px" height="50px"/>
 				<div class="drawer">
 					<div>{{ '生命：' + objectInfo.health }}</div>
 					<div>{{ '速度：' + objectInfo.speed }}</div>

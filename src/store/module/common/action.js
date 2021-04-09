@@ -14,6 +14,9 @@ export default {
   setUserInfo ({ commit }, value) {
     commit(TYPES.USER_INFO, value)
   },
+  setCharacterInfo ({ commit }, value) {
+    commit(TYPES.CHARACTER_INFO, value)
+  },
   updateUserCharacter ({ commit }, value) {
     commit(TYPES.USER_CHARACTER, value)
   },

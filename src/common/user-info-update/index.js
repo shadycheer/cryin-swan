@@ -7,6 +7,7 @@
  **/
 import Store from '@/store'
 import userService from '@/api/user-service'
+import Utils from '@/common/utils'
 
 export const userInfoUpdate = {}
 
@@ -33,7 +34,7 @@ userInfoUpdate.userInfoSetter = async (value) => {
 }
 
 userInfoUpdate.userInfoGetter = async () => {
-  if (Store.state['common/userInfo']) {
+  if (Utils.isNullObject(Store.state['common/userInfo'])) {
     return Store.state['common/userInfo']
   } else if (localStorage.getItem('userInfo')) {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'))
@@ -62,6 +63,21 @@ userInfoUpdate.userCharacterGetter = async () => {
     const userInfo = await userService.getUserInfo()
     await userInfoUpdate.userInfoGetter(userInfo)
     return userInfo.characterId
+  }
+}
+
+userInfoUpdate.characterStatusSetter = async (value) => {
+  await Store.dispatch('common/setCharacterInfo', value)
+  localStorage.setItem('characterInfo', JSON.stringify(value))
+}
+
+userInfoUpdate.characterStatusGetter = async () => {
+  if (Utils.isNullObject(Store.state['common/characterInfo'])) {
+    return Store.state.common.characterInfo
+  } else if (JSON.parse(localStorage.getItem('characterInfo'))) {
+    return JSON.parse(localStorage.getItem('characterInfo'))
+  } else {
+    return '111'
   }
 }
 
