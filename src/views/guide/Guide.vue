@@ -26,18 +26,10 @@ export default {
 		}
 	},
 	methods: {
-		async fetchCharacterInfo () {
-			let info = await userInfoUpdate.characterStatusGetter()
-			this.speed = info.speed
-			this.dash = info.dash
-			this.health = info.health
-			this.jump = info.jump
-			Observe.$emit(EVENT_NAME.transferCharacterData, info)
-		},
 		async init () {
 			const container = document.getElementById('container')
 			thM = new threeInit(container)
-			await this.fetchCharacterInfo()
+			await this.$_fetchCharacterInfo()
 			this.$_propertySetter()
 			this.initRender()
 			this.initCamera()
@@ -74,7 +66,7 @@ export default {
 			thM.add(this.model)
 		},
 		initControls () {
-			thM.controls.autoRotate = false
+			thM.controls.enablePan = false //是否开启右键拖拽
 			thM.controls.minDistance = 50
 			thM.controls.maxDistance = 500
 		},

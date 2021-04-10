@@ -7,6 +7,9 @@
  **/
 import * as THREE from 'three'
 import Utils from '@/common/utils'
+import userInfoUpdate from '@/common/user-info-update'
+import Observe from '@/common/global-event/observe'
+import { EVENT_NAME } from '@/common/global-event/constant'
 
 const debounce = Utils.debounce(300)
 export default {
@@ -26,7 +29,7 @@ export default {
       },
       objMixer: null,
       objAction: null,
-      speed: 50,
+      speed: 0,
       health: 0,
       jump: 0,
       dash: 5,
@@ -35,6 +38,14 @@ export default {
     }
   },
   methods: {
+    async $_fetchCharacterInfo () {
+      let info = await userInfoUpdate.characterStatusGetter()
+      this.speed = info.speed * 10
+      this.dash = info.dash
+      this.health = info.health
+      this.jump = info.jump
+      Observe.$emit(EVENT_NAME.transferCharacterData, info)
+    },
     $_propertySetter () {
       this.modelProperty.set('speed', this.speed)
       this.modelProperty.set('health', this.health)

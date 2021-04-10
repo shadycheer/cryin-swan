@@ -159,7 +159,9 @@
 						@click="loginBtnClick"
 						:disabled="!colorControl.loginUserInput && !colorControl.loginPwdInput"
 				/>
-				<div class="change lo-page" @click="togglePage">1</div>
+				<div class="change lo-page" @click="togglePage">
+					<SvgIcon svg-name="register" width="30px" height="30px"></SvgIcon>
+				</div>
 			</div>
 			<div class="register-form" :class="{'re-turn':toggleClass}">
 				<div>
@@ -207,7 +209,9 @@
 						@click="registerBtnClick"
 						:disabled="!colorControl.registerUserInput && !colorControl.registerPwdInput && colorControl.registerRepeatInput"
 				/>
-				<div class="change re-page" @click="togglePage">1</div>
+				<div class="change re-page" @click="togglePage">
+					<SvgIcon svg-name="login" width="30px" height="30px"></SvgIcon>
+				</div>
 			</div>
 		</div>
 	</div>
