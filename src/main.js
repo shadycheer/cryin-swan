@@ -11,12 +11,13 @@ import router from './router'
 import store from './store'
 import '@/components/base'
 import './plugins/element.js'
-import { MessageBox } from 'element-ui'
+// import { MessageBox } from 'element-ui'
+import MyMessageBox from '@/components/message-box/MessageBox.js'
 
 Vue.config.productionTip = false
-Vue.prototype.$confirm = MessageBox.confirm
-Vue.prototype.$alert = MessageBox.alert
-Vue.prototype.$message = MessageBox
+Vue.prototype.$confirm = MyMessageBox.confirm
+Vue.prototype.$alert = MyMessageBox.alert
+Vue.prototype.$message = MyMessageBox.message
 new Vue({
   router,
   store,
