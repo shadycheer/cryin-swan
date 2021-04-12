@@ -5,7 +5,15 @@
  * @author shadycheer
  *
  **/
-import { CHOOSE_MODEL_ROUTE_NAME, ENTRY_ROUTE_NAME } from '@/router/constant'
+import {
+  CHOOSE_MODEL_ROUTE_NAME,
+  ENTRY_ROUTE_NAME,
+  GUIDE_ROUTE_NAME,
+  MAINTAIN_ROUTE_NAME,
+  MISSION_ONE_ROUTE_NAME,
+  MISSION_THREE_ROUTE_NAME,
+  MISSION_TWO_ROUTE_NAME
+} from '@/router/constant'
 import userInfoUpdate from '@/common/user-info-update'
 import { mapState } from 'vuex'
 import userService from '@/api/user-service'
@@ -50,7 +58,8 @@ export default {
           let info = await userService.getUserInfo()
           console.log(info)
           await userInfoUpdate.userInfoSetter(info.data)
-          this.$router.push({ name: CHOOSE_MODEL_ROUTE_NAME.Home })
+          info.data.characterId !== 0 ?
+            this.$router.push({ name: ENTRY_ROUTE_NAME.ThreeFrame }) : this.$router.push({ name: CHOOSE_MODEL_ROUTE_NAME.Home })
         }
       })
     },
@@ -60,10 +69,64 @@ export default {
       this.$alert(`${str}`, 'CRYIN-SWAN', {
         type: boolean ? 'success' : 'error',
         confirmButtonText: boolean ? '前往登录' : '返回'
-      }).then(r => {
-        console.log(r)
+      }).then(() => {
+        this.togglePage()
+      })
+    },
+    $_openGuideRouterMessage () {
+      let msg = '检测到您尚未完成教学关卡，是否进入教学模式？'
+      this.$confirm(`${msg}`, 'CRYIN-SWAN', {
+        confirmButtonText: '进入教学关卡',
+        cancelButtonText: '跳过',
+      }).then(() => {
+        this.$router.push({ name: GUIDE_ROUTE_NAME.Home })
+      }).catch(async () => {
+        let statusCheck = await userService.updateStatus()
+        console.log(statusCheck)
+        if (statusCheck) await userInfoUpdate.updateUserStatus()
+      })
+    },
+
+    $_logoutMessage () {
+      let msg = '退出登录？'
+      this.$confirm(`${msg}`, 'CRYIN-SWAN', {
+        confirmButtonText: '退出',
+        cancelButtonText: '取消',
+      }).then(() => {
+        localStorage.clear()
+        userInfoUpdate.resetAllData()
+        this.$router.push({ name: MAINTAIN_ROUTE_NAME.Home })
+      }).catch(() => {
+      })
+    },
+
+    $_chooseMissionMessage (mission) {
+      let missionText
+      let routerName
+      switch (mission) {
+        case 1:
+          missionText = '第一关'
+          routerName = MISSION_ONE_ROUTE_NAME.Home
+          break
+        case 2:
+          missionText = '第二关'
+          routerName = MISSION_TWO_ROUTE_NAME.Home
+          break
+        case 3:
+          missionText = '第三关'
+          routerName = MISSION_THREE_ROUTE_NAME.Home
+          break
+        default:
+          break
+      }
+      let msg = `是否进入${missionText}?`
+      this.$confirm(`${msg}`, 'CRYIN-SWAN', {
+        confirmButtonText: '进入',
+        cancelButtonText: '取消',
+      }).then(() => {
+        this.$router.push({ name: routerName })
+      }).catch(() => {
       })
     }
-
   }
 }

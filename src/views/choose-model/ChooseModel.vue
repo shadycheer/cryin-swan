@@ -1,20 +1,67 @@
 <style scoped lang="less">
 @import (reference) "~@/assets/less/index";
+
 .container {
 	width: 100%;
 	height: 100vh;
 }
+
 .drawer {
-	font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC,
-	Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;
+	font-family: '.AppleSystemUIFontMonospaced', sans-serif;
 	background: #7ed6df;
 	width: 100%;
 	height: 100%;
 	display: flex;
-	justify-content: center;
+	justify-content: flex-end;
 	align-items: center;
 	flex-flow: column;
 	font-size: 16px;
+
+	img {
+		width: 150px;
+		height: 150px;
+		border-radius: 50%;
+	}
+
+	&__text {
+		margin-top: 10%;
+
+		&-child {
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			margin-top: 20px;
+
+			span {
+				font-size: 20px;
+			}
+		}
+	}
+
+	&__description {
+		margin-bottom: 10%;
+		margin-top: 30%;
+		font-size: 30px;
+		font-style: italic;
+	}
+
+	&__button {
+		margin-bottom: 20px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		cursor: pointer;
+		color: white;
+		background: rgb(55, 139, 255);
+		width: 95%;
+		height: 50px;
+		border-radius: 6px;
+		transition: 0.3s;
+
+		&:hover {
+			background: rgb(88, 161, 255);
+		}
+	}
 }
 </style>
 
@@ -24,38 +71,66 @@
 			<el-drawer
 					:title="objectInfo.name"
 					direction="rtl"
+					:size="'20%'"
 					:visible.sync="drawer"
 					:with-header="true"
 			>
-				<img :src="'/../../../img/picLogo/' + objectInfo.characterId + '.png'" width="50px" height="50px"/>
 				<div class="drawer">
-					<div>{{ '生命：' + objectInfo.health }}</div>
-					<div>{{ '速度：' + objectInfo.speed }}</div>
-					<div>{{ '跳跃：' + objectInfo.jump }}</div>
-					<div>{{ '冲刺：' + objectInfo.dash }}</div>
-					<div>{{ objectInfo.description }}</div>
-					<el-button @click.stop="$_openChooseModelMessage(objectInfo)">确定</el-button>
+					<img :src="'/../../../img/picLogo/' + objectInfo.characterId + '.png'" width="50px" height="50px"/>
+					<div class="drawer__text">
+						<div class="drawer__text-child">
+							<span>HEALTH:</span>
+							<template v-for="(item, index) in objectInfo.health">
+								<SvgIcon svg-name="heart" width="30px" height="30px" style="margin-left: 5px">></SvgIcon>
+							</template>
+						</div>
+						<div class="drawer__text-child">
+							<span>SPEED:</span>
+							<template v-for="(item, index) in objectInfo.speed">
+								<SvgIcon svg-name="speed" width="30px" height="30px" style="margin-left: 5px">></SvgIcon>
+							</template>
+						</div>
+						<div class="drawer__text-child">
+							<span>DASH:</span>
+							<span v-if="!objectInfo.dash" style="margin-left: 10px">无法冲刺</span>
+							<template v-else v-for="(item, index) in objectInfo.dash">
+								<SvgIcon svg-name="dash" width="30px" height="30px" style="margin-left: 5px">></SvgIcon>
+							</template>
+						</div>
+						<div class="drawer__text-child">
+							<span>JUMP:</span>
+							<span v-if="!objectInfo.jump" style="margin-left: 10px">无法跳跃</span>
+							<template v-else v-for="(item, index) in objectInfo.jump">
+								<SvgIcon svg-name="jump" width="30px" height="30px" style="margin-left: 5px">></SvgIcon>
+							</template>
+						</div>
+					</div>
+					<div class="drawer__description">
+						{{ '"' + objectInfo.description + '"' }}
+					</div>
+					<div class="drawer__button" @click="$_openChooseModelMessage(objectInfo)">
+						确定
+					</div>
 				</div>
 			</el-drawer>
 		</div>
-		<div :class="{'container': !loading}" id="container"></div>
+		<div id="container"></div>
 	</div>
 </template>
 
 <script>
 import * as THREE from 'three'
 import modelService from '@/api/model-service'
-import { MsgBoxMixin } from '@/mixins'
+import { MsgBoxMixin, StatusMixin } from '@/mixins'
 import threeInit from '@/common/three-init'
 import modelOrder from '@/common/model-order'
 import { OBJECT_INFO } from '@/config'
-import userInfoUpdate from '@/common/user-info-update'
 import { mapState } from 'vuex'
 
 let thM
 export default {
 	name: 'HelloThree',
-	mixins: [MsgBoxMixin],
+	mixins: [MsgBoxMixin, StatusMixin],
 	data () {
 		return {
 			loading: true,
@@ -71,6 +146,7 @@ export default {
 	},
 	methods: {
 		async init () {
+			this.$_statusLoading()
 			const container = document.getElementById('container')
 			thM = new threeInit(container)
 			thM.renderer.setClearColor('#fbc531', 1.0)
@@ -80,6 +156,7 @@ export default {
 			this.initControls()
 			this.render()
 			this.update()
+			this.$_statusFinish()
 			window.addEventListener('click', this.onMouseClick)
 		},
 		initCamera () {

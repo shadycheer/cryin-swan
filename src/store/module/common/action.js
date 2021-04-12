@@ -22,5 +22,8 @@ export default {
   },
   updateUserStatus ({ commit }, value) {
     commit(TYPES.USER_STATUS, value)
+  },
+  resetAllData ({ commit }) {
+    commit(TYPES.RESET_ALL_INFO)
   }
 }

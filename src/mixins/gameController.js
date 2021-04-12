@@ -187,39 +187,35 @@ export default {
         || this.moveDirection.moveLeft
         || this.moveDirection.space)
     },
-    $_clearTimer (timer) {
-      if (timer) {
-        clearInterval(timer)
-      }
-      timer = null
-    },
     $_speedUpStart () {
       if (!this.dash) return
-      this.$_clearTimer(this.speedDownTimer)
+      Utils.clearTimerInterval(this.speedDownTimer)
       debounce(() => {
         this.speed = this.speed * 2
         this.speedUpTimer = setInterval(() => {
           console.log(this.dash)
           if (this.dash === 1) {
             this.speed = this.modelProperty.get('speed')
-            this.$_clearTimer(this.speedUpTimer)
+            Utils.clearTimerInterval(this.speedUpTimer)
           }
           this.dash--
+          Observe.$emit(EVENT_NAME.updateDash, false)
         }, 1000)
       })
     },
     $_speedDownStart () {
-      this.$_clearTimer(this.speedUpTimer)
+      Utils.clearTimerInterval(this.speedUpTimer)
       if (this.dash === this.modelProperty.get('dash')) return
       debounce(() => {
-        this.$_clearTimer(this.speedUpTimer)
+        Utils.clearTimerInterval(this.speedUpTimer)
         this.speed = this.modelProperty.get('speed')
         this.speedDownTimer = setInterval(() => {
           console.log(this.dash)
-          if (this.dash === 4) {
-            this.$_clearTimer(this.speedDownTimer)
+          if (this.dash === this.modelProperty.get('dash') - 1) {
+            Utils.clearTimerInterval(this.speedDownTimer)
           }
           this.dash++
+          Observe.$emit(EVENT_NAME.updateDash, true)
         }, 1000)
       })
     }

@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.4.5",
     "font-awesome": "^4.7.0",
+    "physijs": "^1.0.4",
     "svg-sprite-loader": "^5.2.1",
     "three": "^0.124.0",
     "three-fbx-loader": "^1.0.3",

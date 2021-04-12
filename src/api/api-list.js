@@ -18,7 +18,9 @@ export const API_LIST = Object.freeze({
   // 获取用户信息
   getUserInfo: '/user/info',
   // 更新用户所选角色
-  updateUserCharacter: '/user/character/'
+  updateUserCharacter: '/user/character/',
+  // 更新用户是否完成教学关卡
+  updateStatus: '/user/updateStatus'
 })
 
 export default API_LIST

@@ -87,7 +87,9 @@ a {
 					<div class="show-login-page" @click="loginBtnClick">
 						登录
 					</div>
-					<div class="show-us-page">关于我们</div>
+					<div class="show-us-page" @click="aboutUsBtnClick">
+						关于我们
+					</div>
 				</div>
 			</div>
 		</div>
@@ -96,6 +98,7 @@ a {
 
 <script>
 import LoginPage from '@/components/Login/login-page'
+import { MAINTAIN_ROUTE_NAME } from '@/router/constant'
 
 export default {
 	data () {
@@ -108,7 +111,10 @@ export default {
 	},
 	methods: {
 		loginBtnClick () {
-			this.$router.push('login')
+			this.$router.push({ name: MAINTAIN_ROUTE_NAME.Login })
+		},
+		aboutUsBtnClick () {
+			this.$router.push({ name: MAINTAIN_ROUTE_NAME.AboutUs })
 		}
 	},
 }

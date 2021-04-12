@@ -288,6 +288,19 @@ export default {
 		},
 		togglePage () {
 			this.toggleClass = !this.toggleClass
+			this.clearPageData()
+		},
+		clearPageData () {
+			this.loginUser = ''
+			this.loginPwd = ''
+			this.registerUser = ''
+			this.registerPwd = ''
+			this.registerRepeat = ''
+			this.colorControl.registerUserInput = ''
+			this.colorControl.registerPwdInput = ''
+			this.colorControl.registerRepeatInput = ''
+			this.colorControl.loginUserInput = ''
+			this.colorControl.loginPwdInput = ''
 		},
 		async loginBtnClick () {
 			const res = await loginService.userLogin(this.loginUser, this.loginPwd)

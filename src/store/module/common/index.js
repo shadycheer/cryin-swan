@@ -39,10 +39,28 @@ const mutations = {
     state.userInfo.characterId = value
   },
   [TYPES.USER_STATUS] (state, value) {
-    state['common/userInfo'].status = value
+    state.userInfo.status = value
   },
   [TYPES.CHARACTER_INFO] (state, value) {
     state.characterInfo = value
+  },
+  [TYPES.RESET_ALL_INFO] (state) {
+    state.token = ''
+    state.userInfo = {
+      username: '',
+      password: '',
+      userId: 0,
+      status: '',
+      characterId: 0
+    }
+    state.characterInfo = {
+      characterId: 0,
+      health: 0,
+      dash: 0,
+      jump: 0,
+      speed: 0,
+      modelUrl: ''
+    }
   }
 }
 

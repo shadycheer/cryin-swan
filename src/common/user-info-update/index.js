@@ -47,6 +47,14 @@ userInfoUpdate.userInfoGetter = async () => {
   }
 }
 
+userInfoUpdate.updateUserStatus = async () => {
+  let status = 1
+  await Store.dispatch('common/updateUserStatus', status)
+  let userInfo = JSON.parse(localStorage.getItem('userInfo'))
+  userInfo.status = status
+  localStorage.setItem('userInfo', JSON.stringify(userInfo))
+}
+
 userInfoUpdate.updateUserCharacter = async (id) => {
   await Store.dispatch('common/updateUserCharacter', id)
   let userInfo = JSON.parse(localStorage.getItem('userInfo'))
@@ -77,8 +85,12 @@ userInfoUpdate.characterStatusGetter = async () => {
   } else if (JSON.parse(localStorage.getItem('characterInfo'))) {
     return JSON.parse(localStorage.getItem('characterInfo'))
   } else {
-    return '111'
+    return null
   }
+}
+
+userInfoUpdate.resetAllData = async () => {
+  await Store.dispatch('common/resetAllData')
 }
 
 export default userInfoUpdate

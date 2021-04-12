@@ -36,4 +36,16 @@ userService.updateModel = async (id) => {
   ).then(res => res.data.status)
 }
 
+userService.updateStatus = async () => {
+  return axios.post(
+    url + API_LIST.updateStatus,
+    {},
+    {
+      headers: {
+        'Authorization': await userInfoUpdate.tokenGetter()
+      }
+    }
+  ).then(res => res.data.status)
+}
+
 export default userService

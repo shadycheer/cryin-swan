@@ -3,11 +3,18 @@
 </style>
 
 <template>
-	<router-view></router-view>
+	<div>
+		<BigPageLoadingStatus></BigPageLoadingStatus>
+		<router-view></router-view>
+	</div>
 </template>
 
 <script>
+import BigPageLoadingStatus from '@/components/BigPageLoadingStatus'
 export default {
-	name: 'index'
+	name: 'index',
+	components: {
+		BigPageLoadingStatus
+	}
 }
 </script>

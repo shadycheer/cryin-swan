@@ -11,7 +11,6 @@ const PageContainer = () => import(/* webpackChunkName: "chunk-guide" */ '@/view
 const Home = () => import(/* webpackChunkName: "chunk-guide" */ '@/views/guide/Guide')
 export default [{
   path: '/guide',
-  name: 'guide-index',
   component: PageContainer,
   children: [{
     path: '',

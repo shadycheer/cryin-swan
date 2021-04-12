@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg t="1618046830633" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9526"
+     xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200">
+    <defs>
+        <style type="text/css"></style>
+    </defs>
+    <path d="M128 896h768v128H128v-128z m-128-256h128v256H0v-256z m128-256h128v256H128V384z m128-256h128v256H256V128z m384 0h128v256h-128V128zM384 0h256v128H384V0z m384 384h128v256h-128V384z m128 256h128v256h-128v-256z"
+          p-id="9527" data-spm-anchor-id="a313x.7781069.0.i27" class="" fill="#d81e06"></path>
+    <path d="M384 128h256v256H384z" fill="#f4ea2a" p-id="9528" data-spm-anchor-id="a313x.7781069.0.i19" class=""></path>
+    <path d="M256 384h512v256H256z" fill="#f4ea2a" p-id="9529" data-spm-anchor-id="a313x.7781069.0.i21" class=""></path>
+    <path d="M384 128h256v128H384z" fill="#f4ea2a" p-id="9530" data-spm-anchor-id="a313x.7781069.0.i18" class=""></path>
+    <path d="M256 384h128v128H256z" fill="#f4ea2a" p-id="9531" data-spm-anchor-id="a313x.7781069.0.i20" class=""></path>
+    <path d="M640 384h128v128h-128z" fill="#f4ea2a" p-id="9532" data-spm-anchor-id="a313x.7781069.0.i23"
+          class=""></path>
+    <path d="M128 640h768v256H128z" fill="#f4ea2a" p-id="9533" data-spm-anchor-id="a313x.7781069.0.i22" class=""></path>
+    <path d="M128 640h128v256H128z" fill="#f4ea2a" p-id="9534" data-spm-anchor-id="a313x.7781069.0.i24" class=""></path>
+    <path d="M768 640h128v256h-128z" fill="#f4ea2a" p-id="9535" data-spm-anchor-id="a313x.7781069.0.i26"
+          class=""></path>
+    <path d="M256 768h512v128H256z" fill="#f4ea2a" p-id="9536" data-spm-anchor-id="a313x.7781069.0.i25" class=""></path>
+    <path d="M384 384h256v256H384z" p-id="9537" data-spm-anchor-id="a313x.7781069.0.i28" class="selected"
+          fill="#13227a"></path>
+</svg>

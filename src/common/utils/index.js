@@ -28,7 +28,19 @@ const isNullObject = (obj = {}) => {
   return isNull
 }
 
+const clearTimerInterval = (timer) => {
+  if (timer) clearInterval(timer)
+  timer = null
+}
+
+const clearTimerOut = (timer) => {
+  if (timer) clearTimeout(timer)
+  timer = null
+}
+
 export default {
   debounce,
-  isNullObject
+  isNullObject,
+  clearTimerInterval,
+  clearTimerOut
 }

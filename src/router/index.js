@@ -12,11 +12,14 @@ import Base from './base'
 import Guide from './guide'
 import ChooseModel from './choose-model'
 import Login from './login'
+import MissionOne from './mission-one'
+import MissionTwo from './mission-two'
+import MissionThree from './mission-three'
 
 Vue.use(Router)
 
 const routes = [
-  ...Login, ...Entry, ...Guide, ...ChooseModel, ...Base
+  ...Login, ...Entry, ...Guide, ...ChooseModel, ...MissionOne, ...MissionTwo, ...MissionThree, ...Base
 ]
 
 const router = new Router({

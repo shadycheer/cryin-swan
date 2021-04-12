@@ -13,20 +13,22 @@ import modelOrder from '@/common/model-order'
 import threeInit from '@/common/three-init'
 import userInfoUpdate from '@/common/user-info-update'
 import Observe from '@/common/global-event/observe'
-import { GameControlMixin } from '@/mixins'
+import { GameControlMixin, StatusMixin } from '@/mixins'
 import { EVENT_NAME } from '@/common/global-event/constant'
 
 let thM
 export default {
 	name: 'Guide',
-	mixins: [GameControlMixin],
+	mixins: [GameControlMixin, StatusMixin],
 	data () {
 		return {
+			cruiseCamera: new THREE.PerspectiveCamera(),
 			model: new THREE.Object3D(),
 		}
 	},
 	methods: {
 		async init () {
+			this.$_statusLoading()
 			const container = document.getElementById('container')
 			thM = new threeInit(container)
 			await this.$_fetchCharacterInfo()
@@ -39,6 +41,7 @@ export default {
 			this.initControls()
 			this.$_gameOrbitControls(thM.controls)
 			this.$_gameControlKeyBoard(thM.camera)
+			await this.$_statusFinish()
 			this.update()
 			this.render()
 		},
@@ -50,6 +53,9 @@ export default {
 			thM.renderer.shadowMap.type = THREE.PCFSoftShadowMap
 		},
 		initCamera () {
+			this.cruiseCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000)
+			this.cruiseCamera.position.set(0, 300, 300)
+			thM.add(this.cruiseCamera)
 			thM.changeCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000)
 			thM.camera.position.set(0, 300, 300)
 		},
@@ -108,6 +114,13 @@ export default {
 		update () {
 			const update = () => {
 				this.render()
+				if (this.cruiseCamera && this.cruiseCamera.position.y > 71) {
+					this.cruiseCamera.position.z -= 0.5
+					this.cruiseCamera.position.y -= 0.5
+					thM.camera.position.set(this.cruiseCamera.position.x, this.cruiseCamera.position.y, this.cruiseCamera.position.z)
+				} else {
+					this.cruiseCamera = null
+				}
 				requestAnimationFrame(update)
 			}
 			update()

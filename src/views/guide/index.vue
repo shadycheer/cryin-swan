@@ -8,20 +8,21 @@
 
 <template>
 	<div>
+		<BigPageLoadingStatus></BigPageLoadingStatus>
 		<CharacterStatus class="character-status"></CharacterStatus>
 		<router-view></router-view>
 	</div>
 </template>
 
 <script>
-import ScoreList from '@/components/ScoreList'
 import CharacterStatus from '@/components/CharacterStatus'
+import BigPageLoadingStatus from '@/components/BigPageLoadingStatus'
 
 export default {
 	name: 'index',
 	components: {
-		ScoreList,
-		CharacterStatus
+		CharacterStatus,
+		BigPageLoadingStatus
 	}
 }
 </script>

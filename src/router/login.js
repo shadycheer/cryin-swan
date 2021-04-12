@@ -10,7 +10,7 @@ import { MAINTAIN_ROUTE_NAME } from '@/router/constant'
 const Main = () => import(/* webpackChunkName: "chunk-maintain" */'@/views/maintain/index')
 const Home = () => import(/* webpackChunkName: "chunk-maintain" */'@/views/maintain/Home')
 const Login = () => import(/* webpackChunkName: "chunk-maintain" */ '@/views/maintain/Login')
-
+const AboutUs = () => import(/* webpackChunkName: "chunk-maintain" */ '@/views/maintain/AboutUs')
 export default [{
   path: '/main',
   component: Main,
@@ -32,6 +32,14 @@ export default [{
     meta: {
       index: 1,
       keepAlive: true
+    }
+  }, {
+    path: 'aboutUs',
+    name: MAINTAIN_ROUTE_NAME.AboutUs,
+    component: AboutUs,
+    meta: {
+      index: 1,
+      keepAlive: false
     }
   }]
 }]
