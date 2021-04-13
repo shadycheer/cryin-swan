@@ -52,7 +52,6 @@
 			height: 40px;
 			border-radius: 5px;
 			background: #fdcb6e;
-
 			p {
 				overflow: hidden;
 				text-overflow: ellipsis;
@@ -148,7 +147,6 @@
 			height: 40px;
 			border-radius: 5px;
 			background: #fdcb6e;
-
 			p {
 				overflow: hidden;
 				text-overflow: ellipsis;
@@ -183,7 +181,9 @@
 			background: #fdcb6e;
 
 			img {
-
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
 			}
 		}
 
@@ -211,28 +211,30 @@
 		</div>
 		<div class="container__data">
 			<div class="container__data-myself-rank">
-				2
+				{{ missionUserRank }}
 			</div>
 			<div class="container__data-border">
 			</div>
 			<div class="container__data-myself-name">
-				<p>用户名:123321312312312312</p>
+				<p>
+					{{ '用户名:' + missionUserName }}
+				</p>
 			</div>
 			<div class="container__data-myself-character">
-				使用角色: 小糖人
+				{{ '最快通关角色:' + missionUserCharacter }}
 			</div>
 			<div class="container__data-myself-img">
-				<img src="" alt="">
+				<img :src="missionUserIcon" alt="">
 			</div>
 			<div class="container__data-myself-character">
-				总用时: 180秒
+				{{ '总用时:' + missionUserStatus }}
 			</div>
 		</div>
 		<div style="margin-top: 10px">
 			<div class="container__text">
 				总排名
 			</div>
-			<template v-for="(item, index) in 100">
+			<template v-for="(item, index) in allData">
 				<div class="container__all-data">
 					<div class="container__all-data-rank">
 						{{ index + 1 }}
@@ -240,16 +242,18 @@
 					<div class="container__all-data-border">
 					</div>
 					<div class="container__all-data-name">
-						<p>用户名:123321312312312312</p>
+						<p>
+							{{ '用户名:' + item.username }}
+						</p>
 					</div>
 					<div class="container__all-data-character">
-						使用角色: 小糖人
+						{{ '最快通关角色:' + judgeCharacterName(judgeFastCharacter(item)) }}
 					</div>
 					<div class="container__all-data-img">
-						<img src="" alt="">
+						<img :src="judgeIcon(judgeFastCharacter(item))" alt="">
 					</div>
 					<div class="container__all-data-character">
-						总用时: 180秒
+						{{ '总用时:' + changeTimeStructure(item.score.totalTime) }}
 					</div>
 				</div>
 			</template>
@@ -258,7 +262,82 @@
 </template>
 
 <script>
+import { scoreService } from '@/api/score-service'
+import userInfoUpdate from '@/common/user-info-update'
+import modelService from '@/api/model-service'
+
 export default {
-	name: 'MissionTwo'
+	name: 'MissionAll',
+	data () {
+		return {
+			userInfo: {},
+			myselfData: {},
+			allData: {},
+			characterMap: new Map()
+		}
+	},
+	computed: {
+		missionUserRank () {
+			return this.myselfData.m1Rank >= 100 ? '100+' : `${this.myselfData.m1Rank}`
+		},
+		missionUserName () {
+			return this.userInfo.username
+		},
+		missionUserCharacter () {
+			return this.myselfData.score.m1CharacterId === 0 ? '无最快通关角色' : this.myselfData.score.m1CharacterId
+		},
+		missionUserStatus () {
+			return this.myselfData.score.totalTime === 99999999 ? '未完成' : this.myselfData.score.totalTime / 1000
+		},
+		missionUserIcon () {
+			return this.myselfData.score.m1CharacterId === 0 ? '未使用角色' : this.judgeIcon(this.myselfData.score.m1CharacterId)
+		}
+	},
+	methods: {
+		async initMap () {
+			let characterArr = await modelService.fetchModelData().then(res => res.data)
+			characterArr.map(item => this.characterMap.set(item.characterId, item.name))
+		},
+		async fetchMyselfData () {
+			this.userInfo = await userInfoUpdate.userInfoGetter()
+			this.myselfData = await scoreService.fetchMyselfData()
+			console.log(this.userInfo)
+			console.log(this.myselfData)
+		},
+		async fetchAllData () {
+			this.allData = await scoreService.fetchAllData(0)
+			console.log(this.allData)
+		},
+		judgeCharacterName (val) {
+			return this.characterMap.get(val)
+		},
+		changeTimeStructure (val) {
+			return Math.floor(val / 1000) + '秒'
+		},
+		judgeFastCharacter (item) {
+			let time = 0
+			let characterId = 0
+			if (item.score.m1Time > item.score.m2Time) {
+				time = item.score.m2Time
+				characterId = item.score.m2CharacterId
+			} else {
+				time = item.score.m1Time
+				characterId = item.score.m1CharacterId
+			}
+			if (time > item.score.m3Time) {
+				return item.score.m3CharacterId
+			} else {
+				return characterId
+			}
+		},
+		judgeIcon (val) {
+			return '/../../../img/picLogo/' + val + '.png'
+		}
+	},
+	mounted () {
+		this.initMap()
+		this.fetchMyselfData()
+		this.fetchAllData()
+	}
 }
 </script>

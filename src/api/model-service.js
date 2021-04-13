@@ -18,4 +18,8 @@ modelService.fetchModelData = () => {
   return axios.get(url + API_LIST.getModelList).then(res => res.data)
 }
 
+modelService.fetchDefiniteModelData = (id) => {
+  return axios.get(url + API_LIST.getDefiniteCharacterInfo + id).then(res => res.data.data)
+}
+
 export default modelService

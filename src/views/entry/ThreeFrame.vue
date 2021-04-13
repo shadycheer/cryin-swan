@@ -180,7 +180,7 @@ body {
 	<div>
 		<div>
 			<div class="navbar">
-				<div class="button-style" :class="{'button-style-transform': !closed}">
+				<div class="button-style" :class="{'button-style-transform': !closed}" @click="onStartGameClick">
 					开始游戏
 				</div>
 				<div class="choose-mission">
@@ -221,7 +221,7 @@ import modelOrder from '@/common/model-order'
 import threeInit from '@/common/three-init'
 import Observe from '@/common/global-event/observe'
 import { EVENT_NAME } from '@/common/global-event/constant'
-import { CHOOSE_MODEL_ROUTE_NAME } from '@/router/constant'
+import { CHOOSE_MODEL_ROUTE_NAME, GUIDE_ROUTE_NAME } from '@/router/constant'
 import { mapState } from 'vuex'
 import userInfoUpdate from '@/common/user-info-update'
 import Utils from '@/common/utils'
@@ -320,6 +320,10 @@ export default {
 		},
 		onLogoutClick () {
 			this.$_logoutMessage()
+		},
+		onStartGameClick () {
+			userInfoUpdate.updateNextMissionShowSetter(true)
+			this.$router.push({ name: GUIDE_ROUTE_NAME.Home })
 		}
 	},
 	mounted () {

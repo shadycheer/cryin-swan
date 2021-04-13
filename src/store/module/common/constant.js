@@ -17,3 +17,5 @@ export const USER_STATUS = 'USER_STATUS'
 export const CHARACTER_INFO = 'CHARACTER_INFO'
 
 export const RESET_ALL_INFO = 'RESET_ALL_INFO'
+
+export const UPDATE_NEXT_SHOW = 'UPDATE_NEXT_SHOW'

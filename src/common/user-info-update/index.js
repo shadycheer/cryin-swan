@@ -8,6 +8,7 @@
 import Store from '@/store'
 import userService from '@/api/user-service'
 import Utils from '@/common/utils'
+import modelService from '@/api/model-service'
 
 export const userInfoUpdate = {}
 
@@ -85,12 +86,30 @@ userInfoUpdate.characterStatusGetter = async () => {
   } else if (JSON.parse(localStorage.getItem('characterInfo'))) {
     return JSON.parse(localStorage.getItem('characterInfo'))
   } else {
-    return null
+    let info = await modelService.fetchDefiniteModelData(await userInfoUpdate.userCharacterGetter())
+    await userInfoUpdate.characterStatusSetter(info)
+    return info
   }
 }
 
 userInfoUpdate.resetAllData = async () => {
   await Store.dispatch('common/resetAllData')
+  localStorage.clear()
+}
+
+userInfoUpdate.updateNextMissionShowSetter = async (value) => {
+  await Store.dispatch('common/updateNextShow')
+  localStorage.setItem('nextShow', value)
+}
+
+userInfoUpdate.updateNextMissionShowGetter = () => {
+  if (Store.state.nextShow) {
+    return Store.state.nextShow === 'true'
+  } else if (localStorage.getItem('nextShow')) {
+    return localStorage.getItem('nextShow') === 'true'
+  } else {
+    return false
+  }
 }
 
 export default userInfoUpdate

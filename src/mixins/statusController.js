@@ -19,6 +19,7 @@ export default {
       init$: false,
       maskLoading$: true,
       maskFinish$: true,
+      gameFinish$: false
     }
   },
   methods: {
@@ -45,6 +46,9 @@ export default {
         Observe.$emit(EVENT_NAME.statusFinish)
         Utils.clearTimerOut(timer)
       }, 2000)
+    },
+    $_gameFinishTodo () {
+      this.gameFinish$ = true
     }
   }
 }

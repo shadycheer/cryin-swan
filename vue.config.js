@@ -36,5 +36,10 @@ module.exports = {
       .options({
         symbolId: 'svg-[name]'
       })
+    // config.module
+    //   .rule('worker')
+    //   .test(/\.worker\.js$/)
+    //   .use('worker')
+    //   .loader('worker-loader')
   }
 }

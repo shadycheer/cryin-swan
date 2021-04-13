@@ -78,7 +78,8 @@ export default {
       this.$confirm(`${msg}`, 'CRYIN-SWAN', {
         confirmButtonText: '进入教学关卡',
         cancelButtonText: '跳过',
-      }).then(() => {
+      }).then(async () => {
+        await userInfoUpdate.updateNextMissionShowSetter(false)
         this.$router.push({ name: GUIDE_ROUTE_NAME.Home })
       }).catch(async () => {
         let statusCheck = await userService.updateStatus()
@@ -93,7 +94,6 @@ export default {
         confirmButtonText: '退出',
         cancelButtonText: '取消',
       }).then(() => {
-        localStorage.clear()
         userInfoUpdate.resetAllData()
         this.$router.push({ name: MAINTAIN_ROUTE_NAME.Home })
       }).catch(() => {
@@ -123,7 +123,8 @@ export default {
       this.$confirm(`${msg}`, 'CRYIN-SWAN', {
         confirmButtonText: '进入',
         cancelButtonText: '取消',
-      }).then(() => {
+      }).then(async () => {
+        await userInfoUpdate.updateNextMissionShowSetter(false)
         this.$router.push({ name: routerName })
       }).catch(() => {
       })

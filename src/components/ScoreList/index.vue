@@ -45,25 +45,33 @@
 				</SvgIcon>
 			</div>
 			<div class="border-container__score">
-				<el-tabs type="card" v-model="activeName" @tab-click="handleClick">
+				<el-tabs type="card" v-model="activeName">
 					<el-tab-pane label="全部成绩" name="all">
 						<div class="border-container__mission">
-							<MissionAll></MissionAll>
+							<keep-alive>
+								<MissionAll></MissionAll>
+							</keep-alive>
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="第一关成绩" name="first">
 						<div class="border-container__mission">
-							<MissionOne></MissionOne>
+							<keep-alive>
+								<MissionOne></MissionOne>
+							</keep-alive>
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="第二关成绩" name="second">
 						<div class="border-container__mission">
-							<MissionTwo></MissionTwo>
+							<keep-alive>
+								<MissionTwo></MissionTwo>
+							</keep-alive>
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="第三关成绩" name="third">
 						<div class="border-container__mission">
-							<MissionThree></MissionThree>
+							<keep-alive>
+								<MissionThree></MissionThree>
+							</keep-alive>
 						</div>
 					</el-tab-pane>
 				</el-tabs>
@@ -76,10 +84,10 @@
 import Observe from '@/common/global-event/observe'
 import { EVENT_NAME } from '@/common/global-event/constant'
 
-const MissionOne = () => import('@/components/ScoreList/MissionOne')
-const MissionTwo = () => import('@/components/ScoreList/MissionTwo')
-const MissionThree = () => import('@/components/ScoreList/MissionThree')
-const MissionAll = () => import('@/components/ScoreList/MissionAll')
+const MissionOne = () => import('@/components/ScoreList/MissionOneList')
+const MissionTwo = () => import('@/components/ScoreList/MissionTwoList')
+const MissionThree = () => import('@/components/ScoreList/MissionThreeList')
+const MissionAll = () => import('@/components/ScoreList/MissionAllList')
 export default {
 	name: 'index',
 	data () {
@@ -97,9 +105,6 @@ export default {
 		closeBtnClick () {
 			Observe.$emit(EVENT_NAME.showScoreList)
 		},
-		handleClick (tab, event) {
-			console.log(tab, event)
-		}
 	}
 }
 </script>

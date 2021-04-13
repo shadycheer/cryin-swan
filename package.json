@@ -13,6 +13,8 @@
     "element-ui": "^2.4.5",
     "font-awesome": "^4.7.0",
     "physijs": "^1.0.4",
+    "physijs-browserify": "0.0.2",
+    "physijs-webpack": "^0.1.4",
     "svg-sprite-loader": "^5.2.1",
     "three": "^0.124.0",
     "three-fbx-loader": "^1.0.3",
@@ -40,7 +42,10 @@
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
     "vue-cli-plugin-element": "^1.0.1",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "webpack": "^4.46.0",
+    "webworkify": "^1.5.0",
+    "worker-loader": "^3.0.8"
   },
   "eslintConfig": {
     "root": true,

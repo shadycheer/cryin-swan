@@ -25,7 +25,8 @@ const moduleState = {
     jump: 0,
     speed: 0,
     modelUrl: ''
-  }
+  },
+  nextShow: ''
 }
 
 const mutations = {
@@ -61,6 +62,9 @@ const mutations = {
       speed: 0,
       modelUrl: ''
     }
+  },
+  [TYPES.UPDATE_NEXT_SHOW] (state, value) {
+    state.nextShow = value
   }
 }
 

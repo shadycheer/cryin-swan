@@ -13,17 +13,18 @@ import modelOrder from '@/common/model-order'
 import threeInit from '@/common/three-init'
 import userInfoUpdate from '@/common/user-info-update'
 import Observe from '@/common/global-event/observe'
-import { GameControlMixin, StatusMixin } from '@/mixins'
+import { CollisionMixin, GameControlMixin, StatusMixin } from '@/mixins'
 import { EVENT_NAME } from '@/common/global-event/constant'
 
 let thM
 export default {
 	name: 'Guide',
-	mixins: [GameControlMixin, StatusMixin],
+	mixins: [GameControlMixin, StatusMixin, CollisionMixin],
 	data () {
 		return {
 			cruiseCamera: new THREE.PerspectiveCamera(),
 			model: new THREE.Object3D(),
+			textShow: true,
 		}
 	},
 	methods: {
@@ -39,6 +40,7 @@ export default {
 			this.initPlane()
 			await this.initModel()
 			this.initControls()
+			this.$_initPhysicalBox(thM)
 			this.$_gameOrbitControls(thM.controls)
 			this.$_gameControlKeyBoard(thM.camera)
 			await this.$_statusFinish()
@@ -99,17 +101,9 @@ export default {
 			}
 			thM.renderer.render(thM.scene, thM.camera)
 			thM.controls.update()
-			const phi = thM.controls.getPolarAngle() //获取当前用弧度表示的垂直旋转角度
-			const theta = thM.controls.getAzimuthalAngle() //获取当前用弧度表示的水平旋转角度
-			const distance = thM.controls.object.position.distanceTo(thM.controls.target) //获取两点之间的距离
-			this.model.position.x += this.move.x
-			this.model.position.z += this.move.z
-			this.model.rotation.y = theta
 
-			if (this.model) {
-				thM.controls.target.copy(this.model.position)
-				thM.controls.setAngle(phi, theta, distance)
-			}
+			this.$_boxPositionChange(thM)
+			this.$_rayCasterInit(thM)
 		},
 		update () {
 			const update = () => {
@@ -120,19 +114,30 @@ export default {
 					thM.camera.position.set(this.cruiseCamera.position.x, this.cruiseCamera.position.y, this.cruiseCamera.position.z)
 				} else {
 					this.cruiseCamera = null
+					if (this.textShow) {
+						Observe.$emit(EVENT_NAME.textShowStart)
+						this.textShow = false
+					}
 				}
 				requestAnimationFrame(update)
 			}
 			update()
+		},
+		createDoor () {
+			this.$_createDoor(thM, -90, 4, -90)
 		}
 	},
 	mounted () {
 		this.init()
+		Observe.$on(EVENT_NAME.initDoorStart, this.createDoor)
 	},
 	beforeDestroy () {
 		cancelAnimationFrame(this.update)
 		this.model = null
 		thM.destroyMesh()
+	},
+	destroyed () {
+		Observe.$off(EVENT_NAME.initDoorStart, this.createDoor)
 	}
 }
 </script>

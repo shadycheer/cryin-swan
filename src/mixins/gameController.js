@@ -40,6 +40,7 @@ export default {
   methods: {
     async $_fetchCharacterInfo () {
       let info = await userInfoUpdate.characterStatusGetter()
+      console.log(info)
       this.speed = info.speed * 10
       this.dash = info.dash
       this.health = info.health
@@ -68,8 +69,6 @@ export default {
       controls.target.set(0, 0, 0)
     },
     $_gameControlKeyBoard (camera) {
-      this.speed = this.modelProperty.get('speed')
-      this.dash = this.modelProperty.get('dash')
       let center = new THREE.Vector2()
       let mouse = new THREE.Vector2()
 
@@ -92,77 +91,63 @@ export default {
       //计算夹角
       const rad = () => {
         this.move.set(0, 0, 0)
-        const step = 5
+        const step = 50
 
         if (this.moveDirection.moveForward) this.move.z -= step
         if (this.moveDirection.moveLeft) this.move.x -= step
         if (this.moveDirection.moveBackward) this.move.z += step
         if (this.moveDirection.moveRight) this.move.x += step
-
         getRadian()
       }
 
       //绑定键盘按键
       const onKeyDown = (event) => {
         switch (event.keyCode) {
-          case 38: // up
           case 87: // w
             this.moveDirection.moveForward = true
-            this.objAction.play()
             break
-          case 37: // left
           case 65: // a
             this.moveDirection.moveLeft = true
-            this.objAction.play()
             break
-          case 40: // down
           case 83: // s
             this.moveDirection.moveBackward = true
-            this.objAction.play()
             break
-          case 39: // right
           case 68: // d
             this.moveDirection.moveRight = true
-            this.objAction.play()
             break
           case 16: // shift
             if (this.dash && this.$_judgeKeyBoardDown()) {
               this.$_speedUpStart()
-              this.objAction.play()
             }
         }
+        this.objAction.play()
         rad()
       }
       const onKeyUp = (event) => {
         switch (event.keyCode) {
-          case 38: // up
           case 87: // w
             this.moveDirection.moveForward = false
-            this.objAction.stop()
             break
-          case 37: // left
           case 65: // a
             this.moveDirection.moveLeft = false
-            this.objAction.stop()
             break
-          case 40: // down
           case 83: // s
             this.moveDirection.moveBackward = false
-            this.objAction.stop()
             break
-          case 39: // right
           case 68: // d
             this.moveDirection.moveRight = false
-            this.objAction.stop()
             break
           case 16: //shift
             this.$_speedDownStart()
-            this.objAction.stop()
+            break
+          case 32: //space
+
         }
+        this.objAction.stop()
         rad()
       }
-      document.addEventListener('keydown', onKeyDown, false)
-      document.addEventListener('keyup', onKeyUp, false)
+      window.onkeydown = onKeyDown
+      window.onkeyup = onKeyUp
     },
     $_setDistance (camera, vector) {
       //重置矩阵
@@ -218,6 +203,7 @@ export default {
           Observe.$emit(EVENT_NAME.updateDash, true)
         }, 1000)
       })
-    }
+    },
+
   }
 }

@@ -52,7 +52,6 @@
 			height: 40px;
 			border-radius: 5px;
 			background: #fdcb6e;
-
 			p {
 				overflow: hidden;
 				text-overflow: ellipsis;
@@ -148,7 +147,6 @@
 			height: 40px;
 			border-radius: 5px;
 			background: #fdcb6e;
-
 			p {
 				overflow: hidden;
 				text-overflow: ellipsis;
@@ -183,7 +181,9 @@
 			background: #fdcb6e;
 
 			img {
-
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
 			}
 		}
 
@@ -211,28 +211,30 @@
 		</div>
 		<div class="container__data">
 			<div class="container__data-myself-rank">
-				1
+				{{ missionUserRank }}
 			</div>
 			<div class="container__data-border">
 			</div>
 			<div class="container__data-myself-name">
-				<p>用户名:123321312312312312</p>
+				<p>
+					{{ '用户名:' + missionUserName }}
+				</p>
 			</div>
 			<div class="container__data-myself-character">
-				使用角色: 小糖人
+				{{ '使用角色:' + missionUserCharacter }}
 			</div>
 			<div class="container__data-myself-img">
-				<img src="" alt="">
+				<img :src="missionUserIcon" alt="">
 			</div>
 			<div class="container__data-myself-character">
-				总用时: 180秒
+				{{ '用时:' + missionUserStatus }}
 			</div>
 		</div>
 		<div style="margin-top: 10px">
 			<div class="container__text">
-				总排名
+				第三关排名
 			</div>
-			<template v-for="(item, index) in 100">
+			<template v-for="(item, index) in allData">
 				<div class="container__all-data">
 					<div class="container__all-data-rank">
 						{{ index + 1 }}
@@ -240,16 +242,18 @@
 					<div class="container__all-data-border">
 					</div>
 					<div class="container__all-data-name">
-						<p>用户名:123321312312312312</p>
+						<p>
+							{{ '用户名:' + item.username }}
+						</p>
 					</div>
 					<div class="container__all-data-character">
-						使用角色: 小糖人
+						{{ '使用角色:' + judgeCharacterName(item.score.m3CharacterId) }}
 					</div>
 					<div class="container__all-data-img">
-						<img src="" alt="">
+						<img :src="judgeIcon(item.score.m3CharacterId)" alt="">
 					</div>
 					<div class="container__all-data-character">
-						总用时: 180秒
+						{{ '用时:' + changeTimeStructure(item.score.m3Time) }}
 					</div>
 				</div>
 			</template>
@@ -258,7 +262,63 @@
 </template>
 
 <script>
+import { scoreService } from '@/api/score-service'
+import userInfoUpdate from '@/common/user-info-update'
+import modelService from '@/api/model-service'
+
 export default {
-	name: 'MissionAll'
+	name: 'MissionThree',
+	data () {
+		return {
+			userInfo: {},
+			myselfData: {},
+			allData: {},
+			characterMap: new Map()
+		}
+	},
+	computed: {
+		missionUserRank () {
+			return this.myselfData.m3Rank >= 100 ? '100+' : `${this.myselfData.m3Rank}`
+		},
+		missionUserName () {
+			return this.userInfo.username
+		},
+		missionUserCharacter () {
+			return this.myselfData.score.m3CharacterId === 0 ? '未使用角色' : this.myselfData.score.m3CharacterId
+		},
+		missionUserStatus () {
+			return this.myselfData.score.m3State === 0 ? '未完成' : this.myselfData.score.m3Time / 1000
+		},
+		missionUserIcon () {
+			return this.myselfData.score.m3CharacterId === 0 ? '未使用角色' : this.judgeIcon(this.myselfData.score.m3CharacterId)
+		}
+	},
+	methods: {
+		async initMap () {
+			let characterArr = await modelService.fetchModelData().then(res => res.data)
+			characterArr.map(item => this.characterMap.set(item.characterId, item.name))
+		},
+		async fetchMyselfData () {
+			this.userInfo = await userInfoUpdate.userInfoGetter()
+			this.myselfData = await scoreService.fetchMyselfData()
+		},
+		async fetchAllData () {
+			this.allData = await scoreService.fetchAllData(3)
+		},
+		judgeCharacterName (val) {
+			return this.characterMap.get(val)
+		},
+		changeTimeStructure (val) {
+			return Math.floor(val / 1000) + '秒'
+		},
+		judgeIcon (val) {
+			return '/../../../img/picLogo/' + val + '.png'
+		}
+	},
+	mounted () {
+		this.initMap()
+		this.fetchMyselfData()
+		this.fetchAllData()
+	}
 }
 </script>
