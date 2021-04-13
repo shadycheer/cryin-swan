@@ -282,6 +282,7 @@ export default {
       this.$_initPosition(check_5, 0, 28, 950)
       physiInit.add(check_5)
 
+      console.log(physiInit.scene)
     },
     $_initPosition (point, x, y, z) {
       point.position.set(x, y, z)

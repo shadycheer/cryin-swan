@@ -7,12 +7,15 @@
 <script>
 import Observe from '@/common/global-event/observe'
 import { EVENT_NAME } from '@/common/global-event/constant'
+import { StatusMixin } from '@/mixins'
 
 export default {
 	name: 'index',
 	mounted () {
-		this.start()
+		Observe.$on(EVENT_NAME.gameStart, this.start)
+		Observe.$on(EVENT_NAME.gameFinish, this.finish)
 	},
+	mixins: [StatusMixin],
 	props: {
 		width: {
 			type: Number,
@@ -38,7 +41,7 @@ export default {
 		// 渲染
 		render () {
 			if (this.index) {
-				if (this.index % 120 === 0) {
+				if (this.index % 60 === 0) {
 					this.time++
 				}
 			}
@@ -53,6 +56,11 @@ export default {
 		stop () {
 			window.cancelAnimationFrame(this.requestAnimationFrameValue)
 			this.requestAnimationFrameValue = null
+		},
+		finish () {
+			window.cancelAnimationFrame(this.requestAnimationFrameValue)
+			this.requestAnimationFrameValue = null
+			this.$_gameFinishTodo()
 			Observe.$emit(EVENT_NAME.gameFinishTime, this.getTime())
 		},
 		// 返回时间
@@ -61,6 +69,10 @@ export default {
 		},
 		beforeDestroy () {
 			cancelAnimationFrame(this.start)
+		},
+		destroyed () {
+			Observe.$off(EVENT_NAME.gameStart, this.start)
+			Observe.$off(EVENT_NAME.gameFinish, this.finish)
 		}
 	}
 

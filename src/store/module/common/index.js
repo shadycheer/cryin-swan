@@ -26,7 +26,10 @@ const moduleState = {
     speed: 0,
     modelUrl: ''
   },
-  nextShow: ''
+  mission: {
+    nowMission: '',
+    startGame: ''
+  }
 }
 
 const mutations = {
@@ -63,8 +66,8 @@ const mutations = {
       modelUrl: ''
     }
   },
-  [TYPES.UPDATE_NEXT_SHOW] (state, value) {
-    state.nextShow = value
+  [TYPES.UPDATE_NOW_MISSION] (state, value) {
+    state.nowMission = value
   }
 }
 

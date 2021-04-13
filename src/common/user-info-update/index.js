@@ -97,18 +97,22 @@ userInfoUpdate.resetAllData = async () => {
   localStorage.clear()
 }
 
-userInfoUpdate.updateNextMissionShowSetter = async (value) => {
-  await Store.dispatch('common/updateNextShow')
-  localStorage.setItem('nextShow', value)
+userInfoUpdate.updateNextMissionShowSetter = async (value, boolean = true) => {
+  let obj = {
+    nowMission: value,
+    startGame: boolean
+  }
+  await Store.dispatch('common/updateNowMission', obj)
+  localStorage.setItem('nowMission', JSON.stringify(obj))
 }
 
 userInfoUpdate.updateNextMissionShowGetter = () => {
-  if (Store.state.nextShow) {
-    return Store.state.nextShow === 'true'
-  } else if (localStorage.getItem('nextShow')) {
-    return localStorage.getItem('nextShow') === 'true'
+  if (Utils.isNullObject(Store.state.nowMission)) {
+    return Store.state.nowMission
+  } else if (JSON.parse(localStorage.getItem('nowMission'))) {
+    return JSON.parse(localStorage.getItem('nowMission'))
   } else {
-    return false
+    return ''
   }
 }
 

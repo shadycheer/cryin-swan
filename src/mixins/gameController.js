@@ -56,13 +56,10 @@ export default {
     $_gameOrbitControls (controls) {
       controls.setAngle = (phi, theta, distance) => {
         let r = distance || controls.object.position.distanceTo(controls.target)
-
         let x = r * Math.cos(phi - Math.PI / 2) * Math.sin(theta) + controls.target.x
         let y = r * Math.sin(phi + Math.PI / 2) + controls.target.y
         let z = r * Math.cos(phi - Math.PI / 2) * Math.cos(theta) + controls.target.z
-
         controls.object.position.set(x, y, z)
-
         controls.object.lookAt(controls.target)
       }
       controls.rotateSpeed = 0.8

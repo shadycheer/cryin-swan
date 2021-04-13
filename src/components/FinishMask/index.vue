@@ -77,7 +77,7 @@
 </style>
 
 <template>
-	<div class="container">
+	<div class="container" v-if="finishTime !== 0">
 		<div class="container__title">
 			完成!
 		</div>
@@ -85,7 +85,7 @@
 			用时: {{ finishTime }}秒
 		</div>
 		<div class="container__button">
-			<div class="container__button-next" v-if="nextShow">
+			<div class="container__button-next" v-if="nextShow" @click="nextMission">
 				下一关
 			</div>
 			<div class="container__button-back" @click="returnEntryHome">
@@ -97,21 +97,34 @@
 
 <script>
 import userInfoUpdate from '@/common/user-info-update'
-import { ENTRY_ROUTE_NAME } from '@/router/constant'
+import {
+	ENTRY_ROUTE_NAME,
+	MISSION_ONE_ROUTE_NAME,
+	MISSION_THREE_ROUTE_NAME,
+	MISSION_TWO_ROUTE_NAME
+} from '@/router/constant'
 import Observe from '@/common/global-event/observe'
 import { EVENT_NAME } from '@/common/global-event/constant'
+import { StatusMixin } from '@/mixins'
 
 export default {
 	name: 'index',
 	data () {
 		return {
 			finishTime: 0,
+			mission: {
+				nowMission: '',
+				startGame: ''
+			},
 			nextShow: false
 		}
 	},
+	mixins: [StatusMixin],
 	methods: {
 		judgeNextShow () {
-			this.nextShow = userInfoUpdate.updateNextMissionShowGetter()
+			this.mission = userInfoUpdate.updateNextMissionShowGetter()
+			console.log(this.mission)
+			this.nextShow = this.mission.startGame
 		},
 		returnEntryHome () {
 			this.$router.push({ name: ENTRY_ROUTE_NAME.ThreeFrame })
@@ -120,6 +133,22 @@ export default {
 			console.log(val)
 			this.finishTime = val
 			console.log(this.finishTime)
+		},
+		nextMission () {
+			switch (this.mission.nowMission) {
+				case MISSION_ONE_ROUTE_NAME.Home:
+					this.nextMissionControl(MISSION_TWO_ROUTE_NAME.Home, true)
+					break
+				case MISSION_TWO_ROUTE_NAME.Home:
+					this.nextMissionControl(MISSION_THREE_ROUTE_NAME.Home, true)
+					break
+				default:
+					break
+			}
+		},
+		nextMissionControl (routerName, nextShow) {
+			userInfoUpdate.updateNextMissionShowSetter(routerName, nextShow)
+			this.$router.push({ name: routerName })
 		}
 	},
 	mounted () {

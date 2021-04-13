@@ -1,23 +1,5 @@
-<style scoped>
-.character-status {
-	position: absolute;
-	margin-left: 20px;
-	margin-top: 20px;
-}
-
-.text-control {
-	position: absolute;
-	left: 50%;
-	top: 70%;
-	transform: translate(-50%, -30%);
-}
-
-.clock {
-	position: absolute;
-	left: 90%;
-	top: 10%;
-	transform: translate(-10%, -90%);
-}
+<style lang="less" scoped>
+@import "~@/assets/less/index.less";
 </style>
 
 <template>
@@ -25,7 +7,7 @@
 		<Clock class="clock" ref="clock"></Clock>
 		<BigPageLoadingStatus></BigPageLoadingStatus>
 		<CharacterStatus class="character-status"></CharacterStatus>
-		<el-collapse-transition v-if="gameFinish$">
+		<el-collapse-transition>
 			<FinishMask></FinishMask>
 		</el-collapse-transition>
 		<TextControl class="text-control"></TextControl>

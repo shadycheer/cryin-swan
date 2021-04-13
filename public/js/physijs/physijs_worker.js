@@ -2,7 +2,7 @@
 var
   transferableMessage = self.webkitPostMessage || self.postMessage,
 
-  // enum
+// enum
   MESSAGE_TYPES = {
     WORLDREPORT: 0,
     COLLISIONREPORT: 1,
@@ -10,12 +10,12 @@ var
     CONSTRAINTREPORT: 3
   },
 
-  // temp variables
+// temp variables
   _object,
   _vector,
   _transform,
 
-  // functions
+// functions
   public_functions = {},
   getShapeFromCache,
   setShapeCache,
@@ -25,7 +25,7 @@ var
   reportCollisions,
   reportConstraints,
 
-  // world variables
+// world variables
   fixedTimeStep, // used when calling stepSimulation
   rateLimit, // sets whether or not to sync the simulation rate with fixedTimeStep
   last_simulation_time,
@@ -36,7 +36,7 @@ var
   _vec3_2,
   _vec3_3,
   _quat,
-  // private cache
+// private cache
   _objects = {},
   _vehicles = {},
   _constraints = {},
@@ -47,18 +47,18 @@ var
   _num_constraints = 0,
   _object_shapes = {},
 
-  // The following objects are to track objects that ammo.js doesn't clean
-  // up. All are cleaned up when they're corresponding body is destroyed.
-  // Unfortunately, it's very difficult to get at these objects from the
-  // body, so we have to track them ourselves.
+// The following objects are to track objects that ammo.js doesn't clean
+// up. All are cleaned up when they're corresponding body is destroyed.
+// Unfortunately, it's very difficult to get at these objects from the
+// body, so we have to track them ourselves.
   _motion_states = {},
-  // Don't need to worry about it for cached shapes.
+// Don't need to worry about it for cached shapes.
   _noncached_shapes = {},
-  // A body with a compound shape always has a regular shape as well, so we
-  // have track them separately.
+// A body with a compound shape always has a regular shape as well, so we
+// have track them separately.
   _compound_shapes = {},
 
-  // object reporting
+// object reporting
   REPORT_CHUNKSIZE, // report array is increased in increments of this chunk size
 
   WORLDREPORT_ITEMSIZE = 14, // how many float values each reported item needs
@@ -237,7 +237,7 @@ createShape = function (description) {
   }
 
   return shape
-}
+};
 
 public_functions.init = function (params) {
   importScripts(params.ammo)
@@ -575,18 +575,6 @@ public_functions.applyImpulse = function (details) {
   _objects[details.id].activate()
 }
 
-public_functions.applyTorque = function (details) {
-
-  _vec3_1.setX(details.torque_x)
-  _vec3_1.setY(details.torque_y)
-  _vec3_1.setZ(details.torque_z)
-
-  _objects[details.id].applyTorque(
-    _vec3_1
-  )
-  _objects[details.id].activate()
-}
-
 public_functions.applyCentralForce = function (details) {
 
   _vec3_1.setX(details.x)
@@ -599,9 +587,9 @@ public_functions.applyCentralForce = function (details) {
 
 public_functions.applyForce = function (details) {
 
-  _vec3_1.setX(details.force_x)
-  _vec3_1.setY(details.force_y)
-  _vec3_1.setZ(details.force_z)
+  _vec3_1.setX(details.impulse_x)
+  _vec3_1.setY(details.impulse_y)
+  _vec3_1.setZ(details.impulse_z)
 
   _vec3_2.setX(details.x)
   _vec3_2.setY(details.y)
@@ -612,10 +600,6 @@ public_functions.applyForce = function (details) {
     _vec3_2
   )
   _objects[details.id].activate()
-}
-
-public_functions.onSimulationResume = function (params) {
-  last_simulation_time = Date.now()
 }
 
 public_functions.setAngularVelocity = function (details) {
@@ -999,7 +983,7 @@ public_functions.slider_enableLinearMotor = function (params) {
   constraint.setMaxLinMotorForce(params.acceleration)
   constraint.setPoweredLinMotor(true)
   constraint.getRigidBodyA().activate()
-  if (constraint.getRigidBodyB()) {
+  if (constraint.getRigidBodyB) {
     constraint.getRigidBodyB().activate()
   }
 }
@@ -1356,18 +1340,31 @@ reportConstraints = function () {
     if (_constraints.hasOwnProperty(index)) {
       constraint = _constraints[index]
       offset_body = constraint.getRigidBodyA()
-      transform = constraint.getFrameOffsetA()
-      origin = transform.getOrigin()
+      if (constraint.getFrameOffsetA) {
+        transform = constraint.getFrameOffsetA()
+        origin = transform.getOrigin()
 
-      // add values to report
-      offset = 1 + (i++) * CONSTRAINTREPORT_ITEMSIZE
+        // add values to report
+        offset = 1 + (i++) * CONSTRAINTREPORT_ITEMSIZE
 
-      constraintreport[offset] = index
-      constraintreport[offset + 1] = offset_body.id
-      constraintreport[offset + 2] = origin.getX()
-      constraintreport[offset + 3] = origin.getY()
-      constraintreport[offset + 4] = origin.getZ()
-      constraintreport[offset + 5] = constraint.getAppliedImpulse()
+        constraintreport[offset] = index
+        constraintreport[offset + 1] = offset_body.id
+        constraintreport[offset + 2] = origin.getX()
+        constraintreport[offset + 3] = origin.getY()
+        constraintreport[offset + 4] = origin.getZ()
+        constraintreport[offset + 5] = constraint.getAppliedImpulse()
+      } else {
+        // add values to report
+        offset = 1 + (i++) * CONSTRAINTREPORT_ITEMSIZE
+
+        constraintreport[offset] = index
+        constraintreport[offset + 1] = offset_body.id
+        constraintreport[offset + 2] = 0
+        constraintreport[offset + 3] = 0
+        constraintreport[offset + 4] = 0
+        constraintreport[offset + 5] = constraint.getAppliedImpulse()
+      }
+
     }
   }
 

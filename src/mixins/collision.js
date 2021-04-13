@@ -30,6 +30,7 @@ export default {
         visible: true
       }))
       this.box = new Physijs.Mesh(playGeometry, material)
+      console.log(this.box)
       this.box.position.copy(this.model)
       console.log(this.box)
       threeInit.scene.add(this.box)

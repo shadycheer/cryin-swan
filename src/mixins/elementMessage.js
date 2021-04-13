@@ -79,7 +79,7 @@ export default {
         confirmButtonText: '进入教学关卡',
         cancelButtonText: '跳过',
       }).then(async () => {
-        await userInfoUpdate.updateNextMissionShowSetter(false)
+        await userInfoUpdate.updateNextMissionShowSetter(GUIDE_ROUTE_NAME.Home, false)
         this.$router.push({ name: GUIDE_ROUTE_NAME.Home })
       }).catch(async () => {
         let statusCheck = await userService.updateStatus()
@@ -124,10 +124,22 @@ export default {
         confirmButtonText: '进入',
         cancelButtonText: '取消',
       }).then(async () => {
-        await userInfoUpdate.updateNextMissionShowSetter(false)
+        await userInfoUpdate.updateNextMissionShowSetter(routerName, false)
         this.$router.push({ name: routerName })
       }).catch(() => {
       })
+    },
+    $_startGameMessage () {
+      let msg = `开始游戏将从第一关开始，确定继续吗？`
+      this.$confirm(`${msg}`, `CRYIN-SWAN`, {
+        confirmButtonText: '进入',
+        cancelButtonText: '取消'
+      }).then(async () => {
+        await userInfoUpdate.updateNextMissionShowSetter(MISSION_ONE_ROUTE_NAME.Home, true)
+        this.$router.push({ name: MISSION_ONE_ROUTE_NAME.Home })
+      })
+
     }
+
   }
 }

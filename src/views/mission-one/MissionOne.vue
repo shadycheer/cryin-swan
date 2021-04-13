@@ -16,7 +16,7 @@ import userInfoUpdate from '@/common/user-info-update'
 import modelOrder from '@/common/model-order'
 import Observe from '@/common/global-event/observe'
 import { EVENT_NAME } from '@/common/global-event/constant'
-import physiInit from '@/common/Physi-init'
+import physiInit from '@/common/physi-init'
 
 let phM
 export default {
@@ -118,16 +118,19 @@ export default {
 				} else {
 					this.cruiseCamera = null
 					if (this.textShow) {
+						Observe.$emit(EVENT_NAME.gameStart)
 						Observe.$emit(EVENT_NAME.textShowStart)
 						this.textShow = false
 					}
 				}
+				phM.scene.simulate()
 				requestAnimationFrame(update)
 			}
 			update()
 		},
 		createDoor () {
-			this.$_createDoor(phM, 0, 35, 950)
+			// this.$_createDoor(phM, 0, 35, 950)
+			this.$_createDoor(phM, 90, 0, 90)
 		},
 	},
 	mounted () {

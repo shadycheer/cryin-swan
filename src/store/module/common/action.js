@@ -26,7 +26,7 @@ export default {
   resetAllData ({ commit }) {
     commit(TYPES.RESET_ALL_INFO)
   },
-  updateNextShow ({ commit }, value) {
-    commit(TYPES.UPDATE_NEXT_SHOW, value)
+  updateNowMission ({ commit }, value) {
+    commit(TYPES.UPDATE_NOW_MISSION, value)
   }
 }

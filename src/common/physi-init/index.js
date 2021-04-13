@@ -17,7 +17,7 @@ export class physiInit {
     })
     // 初始化场景
     this.scene = new Physijs.Scene()
-    this.scene.setGravity(0, -500, 0)
+    this.scene.setGravity(new THREE.Vector3(0, -500, 0))
     console.log(this.scene)
     // 初始化相机
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)

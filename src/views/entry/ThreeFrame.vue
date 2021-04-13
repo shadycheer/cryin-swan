@@ -221,7 +221,7 @@ import modelOrder from '@/common/model-order'
 import threeInit from '@/common/three-init'
 import Observe from '@/common/global-event/observe'
 import { EVENT_NAME } from '@/common/global-event/constant'
-import { CHOOSE_MODEL_ROUTE_NAME, GUIDE_ROUTE_NAME } from '@/router/constant'
+import { CHOOSE_MODEL_ROUTE_NAME, GUIDE_ROUTE_NAME, MISSION_ONE_ROUTE_NAME } from '@/router/constant'
 import { mapState } from 'vuex'
 import userInfoUpdate from '@/common/user-info-update'
 import Utils from '@/common/utils'
@@ -322,8 +322,7 @@ export default {
 			this.$_logoutMessage()
 		},
 		onStartGameClick () {
-			userInfoUpdate.updateNextMissionShowSetter(true)
-			this.$router.push({ name: GUIDE_ROUTE_NAME.Home })
+			this.$_startGameMessage()
 		}
 	},
 	mounted () {
