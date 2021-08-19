@@ -12,6 +12,9 @@ import store from './store'
 import '@/components/base'
 import './plugins/element.js'
 import '@/assets/font/index.less'
+import { StatusMixin } from '@/mixins'
+
+Vue.mixin(StatusMixin)
 
 Vue.config.productionTip = false
 

@@ -18,6 +18,7 @@ export const EVENT_NAME = Object.freeze({
   statusLoading: 'statusLoading',
   gameStart: 'gameStart',
   gameFinish: 'gameFinish',
+  gameOver: 'gameOver',
   // 教学关卡
   textShowStart: 'textShowStart',
   initDoorStart: 'initDoorStart',

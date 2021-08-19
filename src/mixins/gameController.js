@@ -10,15 +10,18 @@ import Utils from '@/common/utils'
 import userInfoUpdate from '@/common/user-info-update'
 import Observe from '@/common/global-event/observe'
 import { EVENT_NAME } from '@/common/global-event/constant'
-
 const debounce = Utils.debounce(300)
 export default {
   data () {
     return {
       clock: new THREE.Clock(),
       move: new THREE.Vector3(),
+      boxMove: new THREE.Vector3(),
       direction: new THREE.Matrix4(),
       modelProperty: new Map(),
+      jumpJudge: true,
+      jumpStep: 0,
+      jumpTemp: false,
       moveDirection: {
         moveForward: false,
         moveBackward: false,
@@ -44,7 +47,7 @@ export default {
       this.speed = info.speed * 10
       this.dash = info.dash
       this.health = info.health
-      this.jump = info.jump
+      this.jump = info.jump * 15
       Observe.$emit(EVENT_NAME.transferCharacterData, info)
     },
     $_propertySetter () {
@@ -65,7 +68,63 @@ export default {
       controls.rotateSpeed = 0.8
       controls.target.set(0, 0, 0)
     },
+    $_initPhysicalBox (newInit, x, y, z) {
+      let playGeometry = new THREE.BoxGeometry(4, 4, 4, 8, 8, 8)
+      let material = new Physijs.createMaterial(new THREE.MeshPhongMaterial({
+        color: '#6d80c0',
+        restitution: 0.5,
+        transparent: false,
+        friction: 0.5,
+        opacity: 1,
+        visible: false
+      }))
+      this.box = new Physijs.BoxMesh(playGeometry, material, 10)
+      this.box.position.set(x, y, z)
+      newInit.add(this.box)
+    },
+    $_freeFallRender (newInit, x, y, z) {
+      if (this.model.position.y < -30) {
+        this.health--
+        Observe.$emit(EVENT_NAME.updateHealth, this.health)
+        this.box = null
+        this.$_initPhysicalBox(newInit, x, y, z)
+      }
+    },
+    $_boxPositionChange (newInit) {
+      const phi = newInit.controls.getPolarAngle() //获取当前用弧度表示的垂直旋转角度
+      const theta = newInit.controls.getAzimuthalAngle() //获取当前用弧度表示的水平旋转角度
+      const distance = newInit.controls.object.position.distanceTo(newInit.controls.target) //获取两点之间的距离
+
+      if (this.box && this.model) {
+        this.boxMove.x = this.move.x * this.speed
+        this.boxMove.z = this.move.z * this.speed
+
+        if (this.jumpJudge) {
+          this.boxMove.y = this.jump * Math.cos(this.jumpStep)
+          this.jumpStep += 0.05
+          if (this.jumpStep > Math.PI / 2) this.jumpJudge = false
+        } else {
+          this.boxMove.y = 20 * Math.cos(this.jumpStep)
+          if (this.jumpStep < Math.PI && this.jumpStep > Math.PI / 2) {
+            this.jumpStep += 0.05
+          }
+        }
+        this.box.setLinearVelocity(this.boxMove)
+
+        this.model.position.x = this.box.position.x
+        this.model.position.y = this.box.position.y - 2
+        this.model.position.z = this.box.position.z
+
+        this.box.rotation.y = theta
+        this.model.rotation.y = this.box.rotation.y
+
+        newInit.controls.target.copy(this.model.position)
+        newInit.controls.setAngle(phi, theta, distance)
+
+      }
+    },
     $_gameControlKeyBoard (camera) {
+
       let center = new THREE.Vector2()
       let mouse = new THREE.Vector2()
 
@@ -116,6 +175,11 @@ export default {
             if (this.dash && this.$_judgeKeyBoardDown()) {
               this.$_speedUpStart()
             }
+            break
+          case 32: // space
+            this.jumpJudge = true
+            this.jumpStep = 0
+            break
         }
         this.objAction.play()
         rad()
@@ -138,6 +202,7 @@ export default {
             this.$_speedDownStart()
             break
           case 32: //space
+            break
 
         }
         this.objAction.stop()
@@ -159,7 +224,7 @@ export default {
       this.move.applyMatrix4(this.direction)
       this.move.normalize()
 
-      this.move.multiplyScalar(this.speed / 60)
+      this.move.multiplyScalar(this.speed / 30)
     },
     $_judgeKeyBoardDown () {
       return (

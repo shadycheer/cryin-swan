@@ -19,6 +19,7 @@ export default {
       init$: false,
       maskLoading$: true,
       maskFinish$: true,
+      gameOver$: false,
       gameFinish$: false
     }
   },
@@ -47,8 +48,15 @@ export default {
         Utils.clearTimerOut(timer)
       }, 2000)
     },
-    $_gameFinishTodo () {
+    $_gameFinish () {
+      this.gameOver$ = false
       this.gameFinish$ = true
+      Observe.$emit(EVENT_NAME.gameFinish)
+    },
+    $_gameOver () {
+      this.gameOver$ = true
+      this.gameFinish$ = true
+      Observe.$emit(EVENT_NAME.gameOver)
     }
   }
 }

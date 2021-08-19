@@ -14,6 +14,7 @@ export default {
 	mounted () {
 		Observe.$on(EVENT_NAME.gameStart, this.start)
 		Observe.$on(EVENT_NAME.gameFinish, this.finish)
+		Observe.$on(EVENT_NAME.gameOver, this.gameOver)
 	},
 	mixins: [StatusMixin],
 	props: {
@@ -58,10 +59,12 @@ export default {
 			this.requestAnimationFrameValue = null
 		},
 		finish () {
-			window.cancelAnimationFrame(this.requestAnimationFrameValue)
-			this.requestAnimationFrameValue = null
-			this.$_gameFinishTodo()
+			this.stop()
 			Observe.$emit(EVENT_NAME.gameFinishTime, this.getTime())
+		},
+		gameOver () {
+			this.stop()
+			Observe.$emit(EVENT_NAME.gameFinishTime, 99999999)
 		},
 		// 返回时间
 		getTime () {
@@ -73,6 +76,7 @@ export default {
 		destroyed () {
 			Observe.$off(EVENT_NAME.gameStart, this.start)
 			Observe.$off(EVENT_NAME.gameFinish, this.finish)
+			Observe.$off(EVENT_NAME.gameOver, this.gameOver)
 		}
 	}
 

@@ -86,7 +86,9 @@
 			background: #fdcb6e;
 
 			img {
-
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
 			}
 		}
 
@@ -221,10 +223,10 @@
 				</p>
 			</div>
 			<div class="container__data-myself-character">
-				{{ '最快通关角色:' + missionUserCharacter }}
+				{{ '最快通关角色:' + judgeCharacterName(missionUserCharacter) }}
 			</div>
 			<div class="container__data-myself-img">
-				<img :src="missionUserIcon" alt="">
+				<img v-if="missionUserIcon" :src="this.judgeIcon(missionUserIcon)" alt="">
 			</div>
 			<div class="container__data-myself-character">
 				{{ '总用时:' + missionUserStatus }}
@@ -278,7 +280,7 @@ export default {
 	},
 	computed: {
 		missionUserRank () {
-			return this.myselfData.m1Rank >= 100 ? '100+' : `${this.myselfData.m1Rank}`
+			return this.myselfData.totalRank >= 100 ? '100+' : `${this.myselfData.totalRank}`
 		},
 		missionUserName () {
 			return this.userInfo.username
@@ -287,10 +289,10 @@ export default {
 			return this.myselfData.score.m1CharacterId === 0 ? '无最快通关角色' : this.myselfData.score.m1CharacterId
 		},
 		missionUserStatus () {
-			return this.myselfData.score.totalTime === 99999999 ? '未完成' : this.myselfData.score.totalTime / 1000
+			return this.myselfData.score.totalTime === 99999999 ? '未完成' : Math.floor(this.myselfData.score.totalTime / 1000) + '秒'
 		},
 		missionUserIcon () {
-			return this.myselfData.score.m1CharacterId === 0 ? '未使用角色' : this.judgeIcon(this.myselfData.score.m1CharacterId)
+			return this.myselfData.score.m1CharacterId === 0 ? '' : this.myselfData.score.m1CharacterId
 		}
 	},
 	methods: {
@@ -308,7 +310,11 @@ export default {
 			this.allData = await scoreService.fetchAllData(0)
 			console.log(this.allData)
 		},
+		missionUserCharacter () {
+
+		},
 		judgeCharacterName (val) {
+			if (typeof val !== 'number') return val
 			return this.characterMap.get(val)
 		},
 		changeTimeStructure (val) {
@@ -336,6 +342,10 @@ export default {
 	},
 	mounted () {
 		this.initMap()
+		this.fetchMyselfData()
+		this.fetchAllData()
+	},
+	activated () {
 		this.fetchMyselfData()
 		this.fetchAllData()
 	}

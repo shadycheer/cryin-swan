@@ -26,7 +26,9 @@ export const API_LIST = Object.freeze({
   // 获取自己当前关卡成绩
   getSelfScore: '/score/self',
   // 获取当前关卡所有用户全部成绩
-  getAllScore: '/score/list/'
+  getAllScore: '/score/list/',
+  // 更新当前关卡成绩
+  updateScore: '/score/update'
 })
 
 export default API_LIST

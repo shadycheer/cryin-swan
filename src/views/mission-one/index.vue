@@ -19,9 +19,6 @@ import CharacterStatus from '@/components/CharacterStatus/index'
 import BigPageLoadingStatus from '@/components/BigPageLoadingStatus/index'
 import Clock from '@/components/Clock'
 import FinishMask from '@/components/FinishMask'
-import { StatusMixin } from '@/mixins'
-import Observe from '@/common/global-event/observe'
-import { EVENT_NAME } from '@/common/global-event/constant'
 
 export default {
 	name: 'index',
@@ -30,17 +27,6 @@ export default {
 		BigPageLoadingStatus,
 		Clock,
 		FinishMask
-	},
-	mixins: [StatusMixin],
-	mounted () {
-	},
-	methods: {
-		gameFinishEmit () {
-			this.$refs.clock.stop()
-			this.$_gameFinishTodo()
-		}
-	},
-	destroyed () {
 	}
 }
 </script>

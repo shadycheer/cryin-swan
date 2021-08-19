@@ -86,7 +86,9 @@
 			background: #fdcb6e;
 
 			img {
-
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
 			}
 		}
 
@@ -221,10 +223,10 @@
 				</p>
 			</div>
 			<div class="container__data-myself-character">
-				{{ '使用角色:' + missionUserCharacter }}
+				{{ '使用角色:' + this.judgeCharacterName(missionUserCharacter) }}
 			</div>
 			<div class="container__data-myself-img">
-				<img :src="missionUserIcon" alt="">
+				<img v-if="missionUserIcon" :src="missionUserIcon" alt="">
 			</div>
 			<div class="container__data-myself-character">
 				{{ '用时:' + missionUserStatus }}
@@ -287,10 +289,10 @@ export default {
 			return this.myselfData.score.m1CharacterId === 0 ? '未使用角色' : this.myselfData.score.m1CharacterId
 		},
 		missionUserStatus () {
-			return this.myselfData.score.m1State === 0 ? '未完成' : this.myselfData.score.m1Time / 1000
+			return this.myselfData.score.m1State === 0 ? '未完成' : Math.floor(this.myselfData.score.m1Time / 1000) + '秒'
 		},
 		missionUserIcon () {
-			return this.myselfData.score.m1CharacterId === 0 ? '未使用角色' : this.judgeIcon(this.myselfData.score.m1CharacterId)
+			return this.myselfData.score.m1CharacterId === 0 ? '' : this.judgeIcon(this.myselfData.score.m1CharacterId)
 		}
 	},
 	methods: {
@@ -306,6 +308,7 @@ export default {
 			this.allData = await scoreService.fetchAllData(1)
 		},
 		judgeCharacterName (val) {
+			if (typeof val !== 'number') return val
 			return this.characterMap.get(val)
 		},
 		changeTimeStructure (val) {
@@ -317,6 +320,10 @@ export default {
 	},
 	mounted () {
 		this.initMap()
+		this.fetchMyselfData()
+		this.fetchAllData()
+	},
+	activated () {
 		this.fetchMyselfData()
 		this.fetchAllData()
 	}

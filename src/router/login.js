@@ -11,6 +11,7 @@ const Main = () => import(/* webpackChunkName: "chunk-maintain" */'@/views/maint
 const Home = () => import(/* webpackChunkName: "chunk-maintain" */'@/views/maintain/Home')
 const Login = () => import(/* webpackChunkName: "chunk-maintain" */ '@/views/maintain/Login')
 const AboutUs = () => import(/* webpackChunkName: "chunk-maintain" */ '@/views/maintain/AboutUs')
+
 export default [{
   path: '/main',
   component: Main,

@@ -19,38 +19,7 @@ export default {
     }
   },
   methods: {
-    $_initPhysicalBox (threeInit) {
-      let playGeometry = new THREE.BoxGeometry(2, 4, 2, 8, 8, 8)
-      let material = new Physijs.createMaterial(new THREE.MeshPhongMaterial({
-        color: '#6d80c0',
-        restitution: 0.5,
-        transparent: false,
-        friction: 0.5,
-        opacity: 1,
-        visible: true
-      }))
-      this.box = new Physijs.Mesh(playGeometry, material)
-      console.log(this.box)
-      this.box.position.copy(this.model)
-      console.log(this.box)
-      threeInit.scene.add(this.box)
-    },
-    $_boxPositionChange (threeInit) {
-      const phi = threeInit.controls.getPolarAngle() //获取当前用弧度表示的垂直旋转角度
-      const theta = threeInit.controls.getAzimuthalAngle() //获取当前用弧度表示的水平旋转角度
-      const distance = threeInit.controls.object.position.distanceTo(threeInit.controls.target) //获取两点之间的距离
 
-      this.model.position.x += this.move.x
-      this.model.position.z += this.move.z
-      this.model.rotation.y = theta
-
-      if (this.box && this.model) {
-        threeInit.controls.target.copy(this.model.position)
-        threeInit.controls.setAngle(phi, theta, distance)
-        this.box.position.copy(this.model.position)
-        this.box.position.y = this.model.position.y + 2
-      }
-    },
     $_rayCasterInit (threeInit) {
       if (this.createRay) {
         let originPoint = this.box.position.clone()
@@ -86,7 +55,7 @@ export default {
     },
     $_collisionFinish (threeInit) {
       threeInit.controls.autoRotate = true
-      Observe.$emit(EVENT_NAME.gameFinish)
+      this.$_gameFinish()
     },
     beforeDestroy () {
       this.box.dispose()

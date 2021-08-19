@@ -83,7 +83,6 @@ export default {
         this.$router.push({ name: GUIDE_ROUTE_NAME.Home })
       }).catch(async () => {
         let statusCheck = await userService.updateStatus()
-        console.log(statusCheck)
         if (statusCheck) await userInfoUpdate.updateUserStatus()
       })
     },

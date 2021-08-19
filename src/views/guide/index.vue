@@ -21,10 +21,6 @@ import BigPageLoadingStatus from '@/components/BigPageLoadingStatus'
 import TextControl from '@/components/TextControl'
 import FinishMask from '@/components/FinishMask'
 import Clock from '@/components/Clock'
-import Observe from '@/common/global-event/observe'
-import { EVENT_NAME } from '@/common/global-event/constant'
-import { StatusMixin } from '@/mixins'
-import Utils from '@/common/utils'
 
 export default {
 	name: 'index',
@@ -34,22 +30,6 @@ export default {
 		TextControl,
 		FinishMask,
 		Clock
-	},
-	mixins: [StatusMixin],
-	mounted () {
-		Observe.$on(EVENT_NAME.gameFinish, this.gameFinishEmit)
-	},
-	methods: {
-		gameFinishEmit () {
-			this.$refs.clock.stop()
-			let timer = setTimeout(() => {
-				this.$_gameFinishTodo()
-				Utils.clearTimerOut(timer)
-			}, 100)
-		}
-	},
-	destroyed () {
-		Observe.$off(EVENT_NAME.gameFinish, this.gameFinishEmit)
 	}
 }
 </script>

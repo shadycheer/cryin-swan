@@ -79,13 +79,16 @@
 <template>
 	<div class="container" v-if="finishTime !== 0">
 		<div class="container__title">
-			完成!
+			{{ changeText }}
 		</div>
-		<div class="container__time">
+		<div class="container__time" v-if="isGameFinish">
 			用时: {{ finishTime }}秒
 		</div>
+		<div class="container__timer" v-if="!isGameFinish">
+			请再接在厉！
+		</div>
 		<div class="container__button">
-			<div class="container__button-next" v-if="nextShow" @click="nextMission">
+			<div class="container__button-next" v-if="nextShow && isGameFinish" @click="nextMission">
 				下一关
 			</div>
 			<div class="container__button-back" @click="returnEntryHome">
@@ -106,6 +109,8 @@ import {
 import Observe from '@/common/global-event/observe'
 import { EVENT_NAME } from '@/common/global-event/constant'
 import { StatusMixin } from '@/mixins'
+import { scoreService } from '@/api/score-service'
+import userService from '@/api/user-service'
 
 export default {
 	name: 'index',
@@ -116,31 +121,61 @@ export default {
 				nowMission: '',
 				startGame: ''
 			},
+			type: 0,
+			characterId: 0,
 			nextShow: false
 		}
 	},
-	mixins: [StatusMixin],
+	computed: {
+		isGameFinish () {
+			return this.finishTime !== 99999999
+		},
+		changeText () {
+			return this.isGameFinish ? '完成' : '未完成'
+		}
+	},
 	methods: {
-		judgeNextShow () {
-			this.mission = userInfoUpdate.updateNextMissionShowGetter()
+		async judgeNextShow () {
+			this.mission = await userInfoUpdate.updateNextMissionShowGetter()
 			console.log(this.mission)
+			this.characterId = await userInfoUpdate.userCharacterGetter()
+			console.log(this.characterId)
+			switch (this.mission.nowMission) {
+				case MISSION_ONE_ROUTE_NAME.Home:
+					this.type = 1
+					break
+				case MISSION_TWO_ROUTE_NAME.Home:
+					this.type = 2
+					break
+				case MISSION_THREE_ROUTE_NAME.Home:
+					this.type = 3
+					break
+				default:
+					this.type = 0
+			}
 			this.nextShow = this.mission.startGame
 		},
-		returnEntryHome () {
+		async returnEntryHome () {
+			if (this.isGameFinish) {
+				await this.postUserScore()
+			}
+			if (this.type === 0) {
+				let statusCheck = await userService.updateStatus()
+				if (statusCheck) await userInfoUpdate.updateUserStatus()
+			}
 			this.$router.push({ name: ENTRY_ROUTE_NAME.ThreeFrame })
 		},
 		getTime (val) {
-			console.log(val)
 			this.finishTime = val
-			console.log(this.finishTime)
 		},
 		nextMission () {
+			this.postUserScore()
 			switch (this.mission.nowMission) {
 				case MISSION_ONE_ROUTE_NAME.Home:
 					this.nextMissionControl(MISSION_TWO_ROUTE_NAME.Home, true)
 					break
 				case MISSION_TWO_ROUTE_NAME.Home:
-					this.nextMissionControl(MISSION_THREE_ROUTE_NAME.Home, true)
+					this.nextMissionControl(MISSION_THREE_ROUTE_NAME.Home, false)
 					break
 				default:
 					break
@@ -149,6 +184,10 @@ export default {
 		nextMissionControl (routerName, nextShow) {
 			userInfoUpdate.updateNextMissionShowSetter(routerName, nextShow)
 			this.$router.push({ name: routerName })
+		},
+		async postUserScore () {
+			if (this.type === 0) return
+			await scoreService.updateUserScore(this.type, this.characterId, this.finishTime * 1000)
 		}
 	},
 	mounted () {

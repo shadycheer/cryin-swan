@@ -37,6 +37,13 @@ export class physiInit {
     window.onresize = () => this.onWindowResize()
   }
 
+  initSceneSkyBox () {
+    let loader = new THREE.CubeTextureLoader()
+    loader.setPath('skybox/skyboxsun25deg/')
+    //六张图片分别是朝前的（posz）、朝后的（negz）、朝上的（posy）、朝下的（negy）、朝右的（posx）和朝左的（negx）。
+    this.scene.background = loader.load(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg'])
+  }
+
   changeCamera (fov, aspect, near, far, types = 'PerspectiveCamera') {
     this.camera = new THREE[types](fov, aspect, near, far)
     // 更改之后需要重新初始化controls

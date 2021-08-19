@@ -42,7 +42,10 @@ export default {
 				'试着使用WSAD进行前后左右移动吧！',
 				'使用鼠标左键可以更改视角',
 				'注意, 有一些小小英雄是无法进行冲刺和跳跃的',
-				'试图更换角色去冲击别的关卡吧！',
+				'如果你掉落出平面的话，就会减去你的血量',
+				'当你的血量为0时，游戏结束',
+				'请小心驾驶！',
+				'并尝试更换角色去冲击别的关卡吧！',
 				'现在, 地图上已经出现了终点, 试着和他触碰吧！'
 			]
 		}
@@ -53,7 +56,7 @@ export default {
 			let timer = setTimeout(() => {
 				this.index++
 				Utils.clearTimerOut(timer)
-			}, 1000)
+			}, 3000)
 			this.monitorKeyBoard()
 		},
 		monitorKeyBoard () {
@@ -79,12 +82,12 @@ export default {
 		checkOutKeyBoard () {
 			if (this.keyboard.w && this.keyboard.a && this.keyboard.s && this.keyboard.d) {
 				let timer = setInterval(() => {
-					if (this.index === 4) {
+					if (this.index === 7) {
 						Utils.clearTimerInterval(timer)
 						this.initDoorText()
 					}
 					this.index++
-				}, 1000)
+				}, 3000)
 			}
 		},
 		judgeKeyboard () {

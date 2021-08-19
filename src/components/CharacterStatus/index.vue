@@ -105,8 +105,11 @@ export default {
 			this.info = value
 			console.log(this.info)
 		},
-		updateHealth (bool) {
-			bool ? this.info.health++ : this.health.dash--
+		updateHealth (val) {
+			if (this.info.health === 1) {
+				this.$_gameOver()
+			}
+			this.info.health = val
 		},
 		updateDash (bool) {
 			bool ? this.info.dash++ : this.info.dash--

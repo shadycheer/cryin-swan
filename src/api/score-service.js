@@ -28,3 +28,19 @@ scoreService.fetchMyselfData = async () => {
 scoreService.fetchAllData = async (type) => {
   return axios.get(url + API_LIST.getAllScore + type,).then(res => res.data.data)
 }
+
+scoreService.updateUserScore = async (type, characterId, score) => {
+  return axios.post(
+    url + API_LIST.updateScore,
+    {
+      characterId,
+      score,
+      type
+    },
+    {
+      headers: {
+        'Authorization': await userInfoUpdate.tokenGetter()
+      }
+    }
+  ).then(res => res.data)
+}

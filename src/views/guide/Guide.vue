@@ -10,59 +10,59 @@
 
 import * as THREE from 'three'
 import modelOrder from '@/common/model-order'
-import threeInit from '@/common/three-init'
 import userInfoUpdate from '@/common/user-info-update'
 import Observe from '@/common/global-event/observe'
-import { CollisionMixin, GameControlMixin, StatusMixin } from '@/mixins'
+import { CollisionMixin, GameControlMixin, GameRenderMixin, StatusMixin } from '@/mixins'
 import { EVENT_NAME } from '@/common/global-event/constant'
+import physiInit from '@/common/physi-init'
+import { mapMaker } from '@/common/map-maker'
 
-let thM
+let phM
 export default {
 	name: 'Guide',
-	mixins: [GameControlMixin, StatusMixin, CollisionMixin],
+	mixins: [GameControlMixin, StatusMixin, CollisionMixin, GameRenderMixin],
 	data () {
 		return {
-			cruiseCamera: new THREE.PerspectiveCamera(),
 			model: new THREE.Object3D(),
-			textShow: true,
 		}
 	},
 	methods: {
 		async init () {
 			this.$_statusLoading()
 			const container = document.getElementById('container')
-			thM = new threeInit(container)
+			phM = new physiInit(container)
 			await this.$_fetchCharacterInfo()
 			this.$_propertySetter()
 			this.initRender()
 			this.initCamera()
 			this.initLight()
 			this.initPlane()
+			this.$_initPhysicalBox(phM, 0, 20, 0)
 			await this.initModel()
 			this.initControls()
-			this.$_initPhysicalBox(thM)
-			this.$_gameOrbitControls(thM.controls)
-			this.$_gameControlKeyBoard(thM.camera)
+			this.$_gameOrbitControls(phM.controls)
+			this.$_gameControlKeyBoard(phM.camera)
 			await this.$_statusFinish()
 			this.update()
 			this.render()
 		},
 		initRender () {
-			thM.renderer.setPixelRatio(window.devicePixelRatio)
-			thM.renderer.setSize(window.innerWidth, window.innerHeight)
-			thM.renderer.setClearColor('#ffffff', 1.0)
-			thM.renderer.shadowMap.enabled = true
-			thM.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+			phM.renderer.setPixelRatio(window.devicePixelRatio)
+			phM.renderer.setSize(window.innerWidth, window.innerHeight)
+			phM.renderer.setClearColor('#ffffff', 1.0)
+			phM.renderer.shadowMap.enabled = true
+			phM.renderer.shadowMap.type = THREE.PCFSoftShadowMap
 		},
 		initCamera () {
 			this.cruiseCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000)
 			this.cruiseCamera.position.set(0, 300, 300)
-			thM.add(this.cruiseCamera)
-			thM.changeCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000)
-			thM.camera.position.set(0, 300, 300)
+			phM.add(this.cruiseCamera)
+			this.isCruiseCamera = true
+			phM.changeCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000)
+			phM.camera.position.set(0, 300, 300)
 		},
 		initLight () {
-			thM.pointLight.position.set(0, 300, 300)
+			phM.pointLight.position.set(0, 300, 300)
 		},
 		async initModel () {
 			const characterId = await userInfoUpdate.userCharacterGetter()
@@ -71,60 +71,54 @@ export default {
 			this.model.position.set(0, 0, 0)
 			this.objMixer = new THREE.AnimationMixer(this.model)
 			this.objAction = this.objMixer.clipAction(this.model.animations[0])
-			thM.add(this.model)
+			phM.add(this.model)
 		},
 		initControls () {
-			thM.controls.enablePan = false //是否开启右键拖拽
-			thM.controls.minDistance = 50
-			thM.controls.maxDistance = 500
+			phM.controls.enablePan = false //是否开启右键拖拽
+			phM.controls.minDistance = 50
+			phM.controls.maxDistance = 500
 		},
 		initPlane () {
 			// 地板
-			let plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(200, 200),
-					new THREE.MeshPhongMaterial({
-						color: 0xffffff,
-						depthWrite: false
-					}))
-			plane.rotation.x = -Math.PI / 2
-			modelOrder.setShadow(plane, true)
-			thM.add(plane)
+			let startGeometry = new THREE.BoxGeometry(200, 1, 200)
+			let startMaterial = new Physijs.createMaterial(new THREE.MeshPhongMaterial({
+				color: 0xffffff,
+				depthWrite: false
+			}))
+			let startFirst = new Physijs.BoxMesh(startGeometry, startMaterial, 0)
+			mapMaker.initPosition(startFirst, 0, 0, 0)
+			phM.add(startFirst)
 			//添加地板割线
 			let grid = new THREE.GridHelper(200, 20, 0x000000, 0x000000)
 			grid.material.opacity = 0.2//地板割线透明度
 			grid.material.transparent = true//地板材质透明
-			thM.add(grid)
+			phM.add(grid)
 		},
 		render () {
 			let time = this.clock.getDelta()
 			if (this.objMixer) {
 				this.objMixer.update(time)
 			}
-			thM.renderer.render(thM.scene, thM.camera)
-			thM.controls.update()
-
-			this.$_boxPositionChange(thM)
-			this.$_rayCasterInit(thM)
+			phM.renderer.render(phM.scene, phM.camera)
+			phM.controls.update()
+			this.$_freeFallRender(phM, 0, 20, 0)
+			this.$_boxPositionChange(phM)
+			this.$_rayCasterInit(phM)
 		},
 		update () {
 			const update = () => {
 				this.render()
-				if (this.cruiseCamera && this.cruiseCamera.position.y > 71) {
-					this.cruiseCamera.position.z -= 0.5
-					this.cruiseCamera.position.y -= 0.5
-					thM.camera.position.set(this.cruiseCamera.position.x, this.cruiseCamera.position.y, this.cruiseCamera.position.z)
-				} else {
-					this.cruiseCamera = null
-					if (this.textShow) {
-						Observe.$emit(EVENT_NAME.textShowStart)
-						this.textShow = false
-					}
+				if (this.isCruiseCamera) {
+					console.log(this.isCruiseCamera)
+					this.$_renderCruiseCameraGuide(phM)
 				}
+				phM.scene.simulate()
 				requestAnimationFrame(update)
 			}
 			update()
 		},
 		createDoor () {
-			this.$_createDoor(thM, -90, 4, -90)
+			this.$_createDoor(phM, -90, 4, -90)
 		}
 	},
 	mounted () {
@@ -134,7 +128,7 @@ export default {
 	beforeDestroy () {
 		cancelAnimationFrame(this.update)
 		this.model = null
-		thM.destroyMesh()
+		phM.destroyMesh()
 	},
 	destroyed () {
 		Observe.$off(EVENT_NAME.initDoorStart, this.createDoor)
